@@ -7,12 +7,18 @@
 #include <time.h>
 
 #define folderDirectory "C:/KittyCat/"
-#define fileCatData "C:/KittyCat/CatData"
-#define fileProductData "C:/KittyCat/ProductData"
+
 #define fileCatID "C:/KittyCat/CatID"
 #define fileProductID "C:/KittyCat/ProductID"
+#define fileEmployeeID "C:/KittyCat/EmployeeID"
+
+#define fileCatData "C:/KittyCat/CatData"
+#define fileProductData "C:/KittyCat/ProductData"
+#define fileEmployeeData "C:/KittyCat/EmployeeData"
+
 #define tempCatData "C:/KittyCat/tempCatData"
 #define tempProductData "C:/KittyCat/tempProductData"
+#define tempEmployeeData "C:/KittyCat/tempEmployeeData"
 
 void delay(int number_of_seconds)
 {
@@ -56,6 +62,17 @@ struct product
 typedef struct product PDT;
 PDT y;
 
+struct employee
+{
+    int id;
+    char name[20];
+    int age;
+    char birthdate[20];
+    char homeTown[20];
+};
+typedef struct employee EPE;
+EPE z;
+
 void UI_Menu();
 void update(int opt);
 void ExitToMenu()
@@ -86,27 +103,35 @@ void ExitToMenu()
 
 void SubId(int opt)
 {
-    //! opt 1 - cat, opt 2 - product
+    //! opt 1 - cat, opt 2 - product, 3- employee
     int fileID;
     FILE *fptr;
-    fptr = fopen(opt == 1 ? fileCatID : fileProductID, "rb");
+    fptr = fopen(opt == 1 ? fileCatID : opt == 2 ? fileProductID
+                                                 : fileEmployeeID,
+                 "rb");
     fscanf(fptr, "%d", &fileID);
     fileID -= 1;
     fclose(fptr);
-    fptr = fopen(opt == 1 ? fileCatID : fileProductID, "wb");
+    fptr = fopen(opt == 1 ? fileCatID : opt == 2 ? fileProductID
+                                                 : fileEmployeeID,
+                 "wb");
     fprintf(fptr, "%d", fileID);
     fclose(fptr);
 }
 
 int GenerateId(int opt)
 {
-    //! opt 1 - cat, opt 2 - product
+    //! opt 1 - cat, opt 2 - product, 3 - employee
     int fileID;
     FILE *fptr;
-    if ((fptr = fopen(opt == 1 ? fileCatID : fileProductID, "rb")) == NULL)
+    if ((fptr = fopen(opt == 1 ? fileCatID : opt == 2 ? fileProductID
+                                                      : fileEmployeeID,
+                      "rb")) == NULL)
     {
         int id = 1;
-        fptr = fopen(opt == 1 ? fileCatID : fileProductID, "wb");
+        fptr = fopen(opt == 1 ? fileCatID : opt == 2 ? fileProductID
+                                                     : fileEmployeeID,
+                     "wb");
         fprintf(fptr, "%d", id);
         fclose(fptr);
         return 1;
@@ -116,7 +141,9 @@ int GenerateId(int opt)
         fscanf(fptr, "%d", &fileID);
         fileID += 1;
         fclose(fptr);
-        fptr = fopen(opt == 1 ? fileCatID : fileProductID, "wb");
+        fptr = fopen(opt == 1 ? fileCatID : opt == 2 ? fileProductID
+                                                     : fileEmployeeID,
+                     "wb");
         fprintf(fptr, "%d", fileID);
         fclose(fptr);
         return fileID;
@@ -202,7 +229,6 @@ SAVE:
     fflush(stdin);
     printf("\nDo you want to re-input a new product(Y/N): ");
     char reInput;
-REINPUT:
     while (1)
     {
         scanf("%c", &reInput);
@@ -339,6 +365,100 @@ REINPUT:
             printf("\nInvalid option, re-input your choice: ");
             scanf("%c", &reInput);
             goto REINPUT;
+            break;
+        }
+        break;
+    }
+}
+
+void CreateEmployee()
+{
+    char check;
+    int employeeId = GenerateId(3);
+    FILE *fptr;
+    if ((fptr = fopen(fileEmployeeData, "ab")) == NULL)
+    {
+        printf("Error opening/creating file!!\n");
+        exit(0);
+    }
+    puts("\t\t\t==============================");
+    puts("\t\t\t     Create a new Employee  ");
+    puts("\t\t\t==============================");
+    puts("\t\t\t* * * * * * * * * * * * * * * *");
+    // input data of cat
+    printf("\nInput your Employee: ");
+    fflush(stdin);
+    gets(z.name);
+    printf("\nInput the age of your employee: ");
+    fflush(stdin);
+    scanf("%d", &z.age);
+    while (z.age <= 0)
+    {
+        printf("\nInvalid value of age, please re-input it");
+        scanf("%d", &z.age);
+    }
+    printf("\nInput the birthday of your employee(dd/mm/yy): ");
+    fflush(stdin);
+    gets(z.birthday);
+    printf("\nInput the home town of your product: ");
+    gets(z.homeTown);
+    z.id = employeeId;
+    // output data of product you entered
+    system("cls");
+    printf("\nYour information of employee that you have entered:");
+    printf("\n*********************************************");
+    printf("\nEmployee ID %d", z.id);
+    printf("\nEmployee name: %s", z.name);
+    printf("\nEmployee age: %d VND", z.age);
+    printf("\nEmployee birthday: %s", z.birthdate);
+    printf("\nEmployee home town: %s", z.homeTown);
+    printf("\n*********************************************");
+    printf("\nDo you want to save this product(Y/N): ");
+    fflush(stdin);
+SAVE:
+    while (1)
+    {
+        scanf("%c", &check);
+        switch (check)
+        {
+        case 'y':
+        case 'Y':
+            fwrite(&y, sizeof(y), 1, fptr);
+            printf("\nEmployee is saved");
+            fclose(fptr);
+            break;
+        case 'n':
+        case 'N':
+            printf("\nEmployee is not saved");
+            SubId(3);
+            break;
+        default:
+            printf("\nInvalid option, re-input your choice: ");
+            scanf("%c", &check);
+            goto SAVE;
+            break;
+        }
+        break;
+    }
+    fflush(stdin);
+    printf("\nDo you want to re-input a new Employee(Y/N): ");
+    char reInput;
+    while (1)
+    {
+        scanf("%c", &reInput);
+        switch (reInput)
+        {
+        case 'y':
+        case 'Y':
+            system("cls");
+            CreateEmployee();
+            break;
+        case 'n':
+        case 'N':
+            break;
+        default:
+            printf("\nInvalid option, re-input your choice: ");
+            scanf("%c", &reInput);
             break;
         }
         break;
@@ -525,9 +645,11 @@ void searchFunc()
 
 void ShowData(int opt)
 {
-    // ! 1- cat, 2 - products
+    // ! 1- cat, 2 - products, 3 - employees
     FILE *fptr;
-    if ((fptr = fopen(opt == 1 ? fileCatData : fileProductData, "rb")) == NULL)
+    if ((fptr = fopen(opt == 1 ? fileCatData : opt == 2 ? fileProductData
+                                                        : fileEmployeeData,
+                      "rb")) == NULL)
     {
         printf("File not found!");
     }
@@ -560,6 +682,21 @@ void ShowData(int opt)
             x.sex ? printf("Male") : printf("Female");
             printf("\t\t");
             x.vaccination ? printf("Yes") : printf("No");
+            printf("\n");
+        }
+    }
+    else if (opt == 3)
+    {
+        printf("\nInformation of the Employees");
+        printf("\n*********************************************\n");
+        puts("ID \tName\t\t\tAge\t\tBirthday\t\tHome Town\t\t");
+        while (fread(&z, sizeof(z), 1, fptr) == 1)
+        {
+            printf("%d\t", z.id);
+            printf("%s\t\t\t", z.name);
+            printf("%d\t\t", z.age);
+            printf("%s\t\t", z.birthdate);
+            printf("%s\t\t", z.homeTown);
             printf("\n");
         }
     }
@@ -647,6 +784,47 @@ void ManageProduct()
     }
 }
 
+void ManageEmployees()
+{
+    puts("\t\t\t==============================");
+    puts("\t\t\t     Manage Employees  ");
+    puts("\t\t\t==============================");
+    puts("\t\t\t* * * * * * * * * * * * * * * *");
+    puts("\t\t\t1. Show all Employees\n\n\t\t\t2. Add Employee\n\n\t\t\t3. Search Employee\n\n\t\t\t4. Update Employee by ID\n\n\t\t\t5. Delete Employee by ID\n\n\t\t\t5. Exit to Menu\n");
+    printf("\t\t\tSelect your choice:  ");
+    int u;
+    scanf("%d", &u);
+    while (u < 1 || u > 5)
+    {
+        printf("Invalid choice, Please enter a valid choice\n");
+        scanf("%d", &u);
+    }
+    system("cls");
+    switch (u)
+    {
+    case 1:
+        ShowData(3);
+        break;
+    case 2:
+        CreateEmployee();
+        break;
+    case 3:
+        searchProducts();
+        break;
+    case 4:
+        update(3);
+        break;
+    case 5:
+        printf("\nDelete product\n");
+        break;
+    case 6:
+        printf("\nExting to menu ..........");
+        delay(3);
+        UI_Menu();
+        break;
+    }
+}
+
 void UI_Menu()
 {
     // demo UI
@@ -702,7 +880,7 @@ void UI_Menu()
 
 void CheckShowData(int opt)
 {
-    //! 1-cat, 2, product
+    //! 1-cat, 2- product, 3 - employees
     printf("\nDo you want to show data:  ");
     fflush(stdin);
     char check;
@@ -746,7 +924,7 @@ void update(int opt)
     // show cat name here
     CheckShowData(opt);
     FILE *file = fopen(opt == 1 ? fileCatData : opt == 2 ? fileProductData
-                                                         : "hehe",
+                                                         : fileEmployeeData,
                        "rb+");
     if (file == NULL)
     {
@@ -787,13 +965,30 @@ void update(int opt)
         {
             if (id == y.id)
             {
-                printf("\nInformation of the product");
+                printf("\nInformation of the product:");
                 printf("\n*********************************************");
                 printf("\n- Product ID: %d", y.id);
                 printf("\n- Product name: %s", y.name);
                 printf("\n- Product price: %dVND", y.price);
                 printf("\n- Product quantity: %d", y.quantity);
                 printf("\n- Product expiry: %s", y.expiry);
+                isHave++;
+            }
+        }
+    }
+    else if (opt == 3)
+    {
+        while (fread(&z, sizeof(z), 1, file) == 1)
+        {
+            if (id == z.id)
+            {
+                printf("\nYour information of employee:");
+                printf("\n*********************************************");
+                printf("\nEmployee ID %d", z.id);
+                printf("\nEmployee name: %s", z.name);
+                printf("\nEmployee age: %d VND", z.age);
+                printf("\nEmployee birthday: %s", z.birthdate);
+                printf("\nEmployee home town: %s", z.homeTown);
                 isHave++;
             }
         }
@@ -811,6 +1006,7 @@ void update(int opt)
     {
         CAT Data1;
         PDT Data2;
+        EPE Data3;
         if (opt == 1)
         {
             printf("\n********************************************");
@@ -868,12 +1064,33 @@ void update(int opt)
             gets(Data2.expiry);
             Data2.id = id;
         }
+        else if (opt == 3)
+        {
+            printf("\nUpdate your Employee: ");
+            printf("Input your name employee: ");
+            fflush(stdin);
+            gets(Data3.name);
+            printf("\nInput the age of your employee: ");
+            fflush(stdin);
+            scanf("%d", &Data3.age);
+            while (Data3.age <= 0)
+            {
+                printf("\nInvalid value of age, please re-input it");
+                scanf("%d", &Data3.age);
+            }
+            printf("\nInput the birthday of your employee(dd/mm/yy): ");
+            fflush(stdin);
+            gets(Data3.birthday);
+            printf("\nInput the home town of your product: ");
+            gets(Data3.homeTown);
+            Data3.id = id;
+        }
 
         FILE *file = fopen(opt == 1 ? fileCatData : opt == 2 ? fileProductData
-                                                             : "hehe",
+                                                             : fileEmployeeData,
                            "rb+");
         FILE *fileTemp = fopen(opt == 1 ? tempCatData : opt == 2 ? tempProductData
-                                                                 : "hehe",
+                                                                 : tempEmployeeData,
                                "wb");
         if (opt == 1)
         {
@@ -903,6 +1120,20 @@ void update(int opt)
                 }
             }
         }
+        else if (opt == 3)
+        {
+            while (fread(&z, sizeof(z), 1, file) == 1)
+            {
+                if (id != z.id)
+                {
+                    fwrite(&z, sizeof(z), 1, fileTemp);
+                }
+                else
+                {
+                    fwrite(&Data3, sizeof(Data3), 1, fileTemp);
+                }
+            }
+        }
 
         fclose(file);
         fclose(fileTemp);
@@ -915,6 +1146,11 @@ void update(int opt)
         {
             remove(fileProductData);
             rename(tempProductData, fileProductData);
+        }
+        else if (opt == 3)
+        {
+            remove(fileEmployeeData);
+            rename(tempEmployeeData, fileEmployeeData);
         }
 
         ShowData(opt);
