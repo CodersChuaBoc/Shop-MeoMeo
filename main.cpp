@@ -4,12 +4,28 @@
 #include <string.h>
 #include <windows.h>
 #include <unistd.h>
+#include <time.h>
 
 #define folderDirectory "C:/KittyCat/"
 #define fileCatData "C:/KittyCat/CatData"
 #define fileProductData "C:/KittyCat/ProductData"
 #define fileCatID "C:/KittyCat/CatID"
 #define fileProductID "C:/KittyCat/ProductID"
+#define tempCatData "C:/KittyCat/tempCatData"
+#define tempProductData "C:/KittyCat/tempProductData"
+
+void delay(int number_of_seconds)
+{
+    // Converting time into milli_seconds
+    int milli_seconds = 1000 * number_of_seconds;
+
+    // Storing start time
+    clock_t start_time = clock();
+
+    // looping till required time is not achieved
+    while (clock() < start_time + milli_seconds)
+        ;
+}
 
 void create_folder()
 {
@@ -39,6 +55,34 @@ struct product
 };
 typedef struct product PDT;
 PDT y;
+
+void UI_Menu();
+void update(int opt);
+void ExitToMenu()
+{
+    char opt;
+    printf("\nDo you want to exit to menu ?(Y/N): ");
+    fflush(stdin);
+    scanf("%c", &opt);
+    switch (opt)
+    {
+    case 'y':
+    case 'Y':
+        printf("\nExing to menu.............");
+        delay(3);
+        system("cls");
+        UI_Menu();
+        break;
+    case 'n':
+    case 'N':
+        system("cls");
+        break;
+    default:
+        printf("\nInvalid option.");
+        ExitToMenu();
+        break;
+    }
+}
 
 void SubId(int opt)
 {
@@ -479,6 +523,130 @@ void searchFunc()
     }
 }
 
+void ShowData(int opt)
+{
+    // ! 1- cat, 2 - products
+    FILE *fptr;
+    if ((fptr = fopen(opt == 1 ? fileCatData : fileProductData, "rb")) == NULL)
+    {
+        printf("File not found!");
+    }
+    if (opt == 2)
+    {
+        printf("\nInformation of the products");
+        printf("\n*********************************************\n");
+        puts("ID \tName\t\t\tPrice\t\tQuantity\tExpiration");
+        while (fread(&y, sizeof(y), 1, fptr) == 1)
+        {
+            printf("%d\t", y.id);
+            printf("%s\t\t\t", y.name);
+            printf("%dVND\t\t", y.price);
+            printf("%d\t\t", y.quantity);
+            printf("%s\t", y.expiry);
+            printf("\n");
+        }
+    }
+    else if (opt == 1)
+    {
+        printf("\nInformation of the cats");
+        printf("\n*********************************************\n");
+        puts("ID \tName\t\t\tWeight\t\tType\t\tSex\t\tVaccination");
+        while (fread(&x, sizeof(x), 1, fptr) == 1)
+        {
+            printf("%d\t", x.id);
+            printf("%s\t\t\t", x.name);
+            printf("%.1f\t\t", x.weight);
+            printf("%s\t\t", x.type);
+            x.sex ? printf("Male") : printf("Female");
+            printf("\t\t");
+            x.vaccination ? printf("Yes") : printf("No");
+            printf("\n");
+        }
+    }
+    fclose(fptr);
+}
+
+void ManageCat()
+{
+    puts("\t\t\t==============================");
+    puts("\t\t\t     Manage cat  ");
+    puts("\t\t\t==============================");
+    puts("\t\t\t* * * * * * * * * * * * * * * *");
+    puts("\t\t\t1. Show all Cats\n\n\t\t\t2. Add cat\n\n\t\t\t3. Search Cat\n\n\t\t\t4. Update cat by ID\n\n\t\t\t5. Delete cat by ID\n\n\t\t\t6. Exit to Menu\n");
+    printf("\t\t\tSelect your choice:  ");
+    int u;
+    scanf("%d", &u);
+    while (u < 1 || u > 5)
+    {
+        printf("Invalid choice, Please enter a valid choice\n");
+        scanf("%d", &u);
+    }
+    system("cls");
+    switch (u)
+    {
+    case 1:
+        ShowData(1);
+        break;
+    case 2:
+        CreateCat();
+        break;
+    case 3:
+        searchCats();
+        break;
+    case 4:
+        update(1);
+        break;
+    case 5:
+        printf("Delete cat");
+        break;
+    case 6:
+        printf("\nExting to menu ..........");
+        delay(3);
+        UI_Menu();
+        break;
+    }
+}
+void ManageProduct()
+{
+    puts("\t\t\t==============================");
+    puts("\t\t\t     Manage Product  ");
+    puts("\t\t\t==============================");
+    puts("\t\t\t* * * * * * * * * * * * * * * *");
+    puts("\t\t\t1. Show all products\n\n\t\t\t2. Add product\n\n\t\t\t3. Search Product\n\n\t\t\t4. Update product by ID\n\n\t\t\t5. Delete product by ID\n\n\t\t\t5. Exit to Menu\n");
+    printf("\t\t\tSelect your choice:  ");
+    int u;
+    scanf("%d", &u);
+    while (u < 1 || u > 5)
+    {
+        printf("Invalid choice, Please enter a valid choice\n");
+        scanf("%d", &u);
+    }
+    system("cls");
+    switch (u)
+    {
+    case 1:
+        ShowData(2);
+        break;
+    case 2:
+        CreateProduct();
+        break;
+    case 3:
+        searchProducts();
+        break;
+    case 4:
+        update(2);
+        break;
+    case 5:
+        printf("\nDelete product\n");
+        break;
+    case 6:
+        printf("\nExting to menu ..........");
+        delay(3);
+        UI_Menu();
+        break;
+    }
+}
+
 void UI_Menu()
 {
     // demo UI
@@ -489,17 +657,23 @@ void UI_Menu()
         puts("\t\t\t==============================");
         puts("\t\t\t* * * * * * * * * * * * * * * *");
         puts("\t\t\t1. Manage Cat\n\n\t\t\t2. Manage Products\n\n\t\t\t3. Your Cart\n\n\t\t\t4. Manage Finance\n\n\t\t\t5. Manage Client\n\n\t\t\t6. Exit");
-        printf("\t\t\tSelect your choice  ");
+        printf("\t\t\tSelect your choice:  ");
         int u;
         scanf("%d", &u);
+        while (u < 1 || u > 6)
+        {
+            printf("Invalid choice, Please try again:  ");
+            scanf("%d", &u);
+        }
+        system("cls");
         if (u == 1)
         {
-            printf("Your choice is 1");
+            ManageCat();
             exit(0);
         }
         else if (u == 2)
         {
-            printf("Your choice is 2");
+            ManageProduct();
             exit(0);
         }
         else if (u == 3)
@@ -523,9 +697,235 @@ void UI_Menu()
             printf("exit");
             exit(0);
         }
-        else
+    }
+}
+
+void CheckShowData(int opt)
+{
+    //! 1-cat, 2, product
+    printf("\nDo you want to show data:  ");
+    fflush(stdin);
+    char check;
+    scanf("%c", &check);
+    switch (check)
+    {
+    case 'y':
+    case 'Y':
+        ShowData(opt);
+        break;
+    case 'n':
+    case 'N':
+        break;
+    default:
+        printf("\nInvalid option.");
+        CheckShowData(opt);
+        break;
+    }
+}
+
+void update(int opt)
+{
+    //! 1- cat, 2 - product, 3- employee
+    int id;
+    int isHave = 0;
+    puts("\t\t\t==============================");
+    if (opt == 1)
+    {
+        puts("\t\t\tUpdate cat by id");
+    }
+    else if (opt == 2)
+    {
+        puts("\t\t\tUpdate Product by id");
+    }
+    else if (opt == 3)
+    {
+        puts("\t\t\tUpdate Employee by id");
+    }
+    puts("\t\t\t==============================");
+    puts("\t\t\t* * * * * * * * * * * * * * * *");
+    // show cat name here
+    CheckShowData(opt);
+    FILE *file = fopen(opt == 1 ? fileCatData : opt == 2 ? fileProductData
+                                                         : "hehe",
+                       "rb+");
+    if (file == NULL)
+    {
+        printf("\nError opening file");
+        printf("\nExiting to menu........");
+        delay(3);
+        UI_Menu();
+    }
+    printf("Please, Enter your id: ");
+    scanf("%d", &id);
+    if (opt == 1)
+    {
+        while (fread(&x, sizeof(x), 1, file) == 1)
         {
-            puts("Invalid option. Please select one of the available options");
+            if (id == x.id)
+            {
+                printf("\n\tKitty %s say hello!", x.name);
+                printf("\n*********************************************");
+                printf("\n- Kitty ID: %d", x.id);
+                printf("\n- Kitty name: %s", x.name);
+                printf("\n- Kitty weight: %.1f", x.weight);
+                printf("\n- Kitty type: %s", x.type);
+                if (x.sex == 1)
+                    printf("\n- Sex: Male");
+                else
+                    printf("\n- Sex: Female");
+                if (x.vaccination == 1)
+                    printf("\n- Vaccinate status: Vaccinated");
+                else
+                    printf("\n- Vaccinate status: Not vaccinated");
+                isHave++;
+            }
+        }
+    }
+    else if (opt == 2)
+    {
+        while (fread(&y, sizeof(y), 1, file) == 1)
+        {
+            if (id == y.id)
+            {
+                printf("\nInformation of the product");
+                printf("\n*********************************************");
+                printf("\n- Product ID: %d", y.id);
+                printf("\n- Product name: %s", y.name);
+                printf("\n- Product price: %dVND", y.price);
+                printf("\n- Product quantity: %d", y.quantity);
+                printf("\n- Product expiry: %s", y.expiry);
+                isHave++;
+            }
+        }
+    }
+
+    fclose(file);
+
+    if (!isHave)
+    {
+        printf("\nNot found");
+        ExitToMenu();
+        update(opt);
+    }
+    else
+    {
+        CAT Data1;
+        PDT Data2;
+        if (opt == 1)
+        {
+            printf("\n********************************************");
+            printf("\nUpdate your kitty: ");
+            fflush(stdin);
+            printf("\nInput your name kitty: ");
+            gets(Data1.name);
+            printf("\nInput the weight of your kitty: ");
+            fflush(stdin);
+            scanf("%f", &Data1.weight);
+            fflush(stdin);
+            printf("\nInput the type of your kitty: ");
+            gets(Data1.type);
+            fflush(stdin);
+            printf("\nInput the sex of your kitty (0-female or 1-male): ");
+            scanf("%d", &Data1.sex);
+            while (Data1.sex != 0 && Data1.sex != 1)
+            {
+                printf("\nInvalid option, re-input the sex of your kitty");
+                scanf("%d", &Data1.sex);
+            }
+            printf("\nInput the vaccination of your kitty (1-yes or 0-not): ");
+            scanf("%d", &Data1.vaccination);
+            while (Data1.vaccination != 0 && Data1.vaccination != 1)
+            {
+                printf("\nInvalid option, re-input the vaccination of your kitty");
+                scanf("%d", &Data1.vaccination);
+            }
+            Data1.id = id;
+        }
+        else if (opt == 2)
+        {
+            printf("\nUpdate your product: ");
+            fflush(stdin);
+            printf("\nInput your name product: ");
+            gets(Data2.name);
+            printf("\nInput the price of your product: ");
+            fflush(stdin);
+            scanf("%u", &Data2.price);
+            while (Data2.price <= 0)
+            {
+                printf("\nInvalid value of price, please re-input it");
+                scanf("%u", &Data2.price);
+            }
+            printf("\nInput the quantity of your product: ");
+            fflush(stdin);
+            scanf("%d", &Data2.quantity);
+            while (Data2.quantity < 0)
+            {
+                printf("\nInvalid value of quantity, please re-input it");
+                scanf("%d", &Data2.quantity);
+            }
+            fflush(stdin);
+            printf("\nInput the expiry of your product: ");
+            gets(Data2.expiry);
+            Data2.id = id;
+        }
+
+        FILE *file = fopen(opt == 1 ? fileCatData : opt == 2 ? fileProductData
+                                                             : "hehe",
+                           "rb+");
+        FILE *fileTemp = fopen(opt == 1 ? tempCatData : opt == 2 ? tempProductData
+                                                                 : "hehe",
+                               "wb");
+        if (opt == 1)
+        {
+            while (fread(&x, sizeof(x), 1, file) == 1)
+            {
+                if (id != x.id)
+                {
+                    fwrite(&x, sizeof(x), 1, fileTemp);
+                }
+                else
+                {
+                    fwrite(&Data1, sizeof(Data1), 1, fileTemp);
+                }
+            }
+        }
+        else if (opt == 2)
+        {
+            while (fread(&y, sizeof(y), 1, file) == 1)
+            {
+                if (id != y.id)
+                {
+                    fwrite(&y, sizeof(y), 1, fileTemp);
+                }
+                else
+                {
+                    fwrite(&Data2, sizeof(Data2), 1, fileTemp);
+                }
+            }
+        }
+
+        fclose(file);
+        fclose(fileTemp);
+        if (opt == 1)
+        {
+            remove(fileCatData);
+            rename(tempCatData, fileCatData);
+        }
+        else if (opt == 2)
+        {
+            remove(fileProductData);
+            rename(tempProductData, fileProductData);
+        }
+
+        ShowData(opt);
+        printf("\nPress any key to Continue to Menu\n");
+        if (getch())
+        {
+            system("cls");
+            if (opt == 1)
+                ManageCat();
+            if (opt == 2)
+                ManageProduct();
         }
     }
 }
@@ -533,9 +933,6 @@ void UI_Menu()
 int main()
 {
     create_folder();
-    // UI_Menu();
-    // CreateProduct();
-    // CreateCat();
-    searchFunc();
+    UI_Menu();
     return 0;
 }
