@@ -68,9 +68,9 @@ struct employee
 {
     int id;
     char name[20];
-    int age;
+    int gender;
     char birthdate[20];
-    char homeTown[20];
+    char Address[100];
 };
 typedef struct employee EPE;
 EPE z;
@@ -111,7 +111,7 @@ void ExitToMenu()
 
 void SubId(int opt)
 {
-    //! opt 1 - cat, opt 2 - product, 3- employee
+    //! opt 1 - cat, opt 2 - product, 3 - employee
     int fileID;
     FILE *fptr;
     fptr = fopen(opt == 1 ? fileCatID : opt == 2 ? fileProductID
@@ -162,17 +162,14 @@ void login()
 {
     char username[30], password[20];
     FILE *log;
-
-    log = fopen(fileUserData, "rb");
+    log = fopen(fileUserData, "r");
     if (log == NULL)
     {
         fputs("Error at opening File!", stderr);
         exit(1);
     }
     struct login l;
-    puts("--------------------------------------------");
-    printf("\n    Login with Username & Password\n");
-    puts("--------------------------------------------");
+    printf("\nLogin with Username & Password\n");
     printf("\nUsername:");
     scanf("%s", username);
     printf("\nPassword:");
@@ -180,13 +177,11 @@ void login()
     while (fread(&l, sizeof(l), 1, log))
     {
         if (strcmp(username, l.username) == 0 && strcmp(password, l.password) == 0)
-
         {
-            printf("\nSuccessful Login!!\n");
-            printf("\nPress any key to continue to Menu...");
+            printf("\nSuccessful Login\n");
+            printf("\nPress any key to continue...");
             getch();
             system("cls");
-            UI_Menu();
         }
         else
         {
@@ -196,54 +191,46 @@ void login()
             login();
         }
     }
-
     fclose(log);
-
     return;
 }
 
 void registration()
 {
     FILE *log;
-
     log = fopen(fileUserData, "w");
     if (log == NULL)
     {
         fputs("Error at opening File!", stderr);
         exit(1);
     }
-
     struct login l;
-    puts("-----------------------------------------");
-    printf("         Registration         \n");
-    puts("-----------------------------------------");
+    printf("******** Registration ********");
     printf("\nYou need to enter some details for registration:");
-    printf("\nEnter Username:  ");
+    printf("\nEnter Username:\n");
     scanf("%s", l.username);
-    printf("\nEnter Password:  ");
+    printf("\nEnter Password:\n");
     scanf("%s", l.password);
-
     fwrite(&l, sizeof(l), 1, log);
     fclose(log);
-
     printf("\nRegistration Successful!\n");
-    printf("Press any key to continue to Login!!!");
+    printf("Press any key to continue...");
     getch();
+    getchar();
     system("CLS");
     login();
 }
+
 void userAuthMenu()
 {
     int choice;
-    puts("-----------------------------------------");
-    printf("      Welcome to Shop-meomeo\n");
-    puts("-----------------------------------------");
+    printf("\n***** Welcome to Shop-meomeo ****");
     printf("\n1.Login");
     printf("\n2.Register");
     printf("\n3.Exit");
     printf("\nEnter your choice: ");
     scanf("%d", &choice);
-    while (choice < 1 || choice > 3)
+    while (choice < 1 || choice > 6)
     {
         printf("Invalid choice, Please try again:  ");
         scanf("%d", &choice);
@@ -504,17 +491,18 @@ void CreateEmployee()
     gets(z.name);
     printf("\nInput the age of your employee: ");
     fflush(stdin);
-    scanf("%d", &z.age);
-    while (z.age <= 0)
+    printf("\nInput the gender of your employee (0-female or 1-male): ");
+    scanf("%d", &z.gender);
+    while (z.gender != 0 && z.gender != 1)
     {
-        printf("\nInvalid value of age, please re-input it");
-        scanf("%d", &z.age);
+        printf("\nInvalid option, re-input the gender of your employee");
+        scanf("%d", &z.gender);
     }
     printf("\nInput the birthday of your employee(dd/mm/yy): ");
     fflush(stdin);
     gets(z.birthdate);
-    printf("\nInput the home town of your product: ");
-    gets(z.homeTown);
+    printf("\nInput the Address of your product: ");
+    gets(z.Address);
     z.id = employeeId;
     // output data of product you entered
     system("cls");
@@ -522,9 +510,16 @@ void CreateEmployee()
     printf("\n*********************************************");
     printf("\nEmployee ID %d", z.id);
     printf("\nEmployee name: %s", z.name);
-    printf("\nEmployee age: %d VND", z.age);
-    printf("\nEmployee birthday: %s", z.birthdate);
-    printf("\nEmployee home town: %s", z.homeTown);
+    if (z.gender)
+    {
+        printf("\nThe gender of your employee: male");
+    }
+    else
+    {
+        printf("\nThe gender of your employee: female");
+    }
+    printf("\nEmployee birthdate: %s", z.birthdate);
+    printf("\nEmployee address: %s", z.Address);
     printf("\n*********************************************");
     printf("\nDo you want to save this product(Y/N): ");
     fflush(stdin);
@@ -576,6 +571,83 @@ SAVE:
         }
         break;
     }
+}
+
+int checkEmployeeAvailable(int employeeId)
+{
+    // check if the Employee ID is available or not
+    FILE *fptr;
+    char dir[30] = fileEmployeeData;
+    fptr = fopen(dir, "rb");
+    while (!feof(fptr))
+    {
+        fread(&x, sizeof(x), 1, fptr);
+        if (employeeId == z.id)
+        {
+            fclose(fptr);
+            return 1;
+        }
+        else
+        {
+            fclose(fptr);
+            return 0;
+        }
+    }
+}
+
+void searchEmployees()
+{
+    FILE *fptr;
+    char dir[30] = fileEmployeeData;
+    int employeeId, searchID;
+    if ((fptr = fopen(dir, "rb")) == NULL)
+    {
+        printf("File not found!");
+    }
+    fflush(stdin);
+    printf("> Enter the Employee ID to search: ");
+    scanf("%d", &searchID);
+    if (checkEmployeeAvailable(employeeId) == 0)
+    {
+        printf("\nEmployee ID is invalid! Employee not found!");
+    }
+    while (fread(&x, sizeof(x), 1, fptr) == 1)
+    {
+        if (searchID == z.id)
+        {
+            system("cls");
+            printf("\n\tInformation of %s", z.name);
+            printf("\n*********************************************");
+            printf("\n- Employee ID: %d", z.id);
+            printf("\n- Employee name: %s", z.name);
+            if (z.gender == 1)
+                printf("\n- Gender: Male");
+            else
+                printf("\n- Gender: Female");
+            printf("- Employee birthdate: %s", z.birthdate);
+            printf("- Employee address: %s", z.Address);
+        }
+    }
+    char reSearch;
+    printf("\n> Do you want to search for another employee? (Y/N): ");
+REINPUTEMPLOYEES:
+    scanf("%s", &reSearch);
+    switch (reSearch)
+    {
+    case 'y':
+    case 'Y':
+        system("cls");
+        searchEmployees();
+        break;
+    case 'n':
+    case 'N':
+        break;
+    default:
+        printf("Invalid option, please reinput your choice: ");
+        goto REINPUTEMPLOYEES;
+        break;
+    }
+    fclose(fptr);
 }
 
 int checkCatAvailable(int catID)
@@ -637,11 +709,11 @@ void searchCats()
                 printf("\n- Vaccinate status: Not vaccinated");
         }
     }
-    char reSearch1;
+    char reSearch;
     printf("\n> Do you want to search for another kitty? (Y/N): ");
-REINPUT1:
-    scanf("%s", &reSearch1);
-    switch (reSearch1)
+REINPUTCAT:
+    scanf("%s", &reSearch);
+    switch (reSearch)
     {
     case 'y':
     case 'Y':
@@ -653,7 +725,7 @@ REINPUT1:
         break;
     default:
         printf("Invalid option, please reinput your choice: ");
-        goto REINPUT1;
+        goto REINPUTCAT;
         break;
     }
     fclose(fptr);
@@ -711,11 +783,11 @@ void searchProducts()
             printf("\n- Product expiry: %s", y.expiry);
         }
     }
-    char reSearch2;
+    char reSearch;
     printf("\n> Do you want to search for another product? (Y/N): ");
-REINPUT2:
-    scanf("%s", &reSearch2);
-    switch (reSearch2)
+REINPUTPRODUCT:
+    scanf("%s", &reSearch);
+    switch (reSearch)
     {
     case 'y':
     case 'Y':
@@ -727,7 +799,7 @@ REINPUT2:
         break;
     default:
         printf("Invalid option, please reinput your choice: ");
-        goto REINPUT2;
+        goto REINPUTPRODUCT;
         break;
     }
     fclose(fptr);
@@ -737,16 +809,20 @@ void searchFunc()
 {
     int searchChoice;
     printf("=========== SEARCH ============");
-    printf("\n1. Search Cats");
-    printf("\n2. Search Products");
+    printf("\n1. Search Employees");
+    printf("\n2. Search Cats");
+    printf("\n3. Search Products");
     printf("\n\n> What do you want to search: ");
     scanf("%d", &searchChoice);
     switch (searchChoice)
     {
     case 1:
-        searchCats();
+        searchEmployees();
         break;
     case 2:
+        searchCats();
+        break;
+    case 3:
         searchProducts();
         break;
     default:
@@ -758,7 +834,7 @@ void searchFunc()
 
 void ShowData(int opt)
 {
-    // ! 1- cat, 2 - products, 3 - employees
+    // ! 1 - cat, 2 - products, 3 - employees
     FILE *fptr;
     if ((fptr = fopen(opt == 1 ? fileCatData : opt == 2 ? fileProductData
                                                         : fileEmployeeData,
@@ -802,14 +878,14 @@ void ShowData(int opt)
     {
         printf("\nInformation of the Employees");
         printf("\n*********************************************\n");
-        puts("ID \tName\t\t\tAge\t\tBirthday\t\tHome Town\t\t");
+        puts("ID \tName\t\t\tGender\t\tBirthdate\t\tAddress\t\t");
         while (fread(&z, sizeof(z), 1, fptr) == 1)
         {
             printf("%d\t", z.id);
             printf("%s\t\t\t", z.name);
-            printf("%d\t\t", z.age);
+            z.gender ? printf("Male") : printf("Female");
             printf("%s\t\t", z.birthdate);
-            printf("%s\t\t", z.homeTown);
+            printf("%s\t\t", z.Address);
             printf("\n");
         }
     }
@@ -1072,7 +1148,6 @@ void deleteAllMenu()
         exit(0);
     }
     else if (u == 4)
-
     {
         system("cls");
         printf("Return to main menu....");
@@ -1080,6 +1155,7 @@ void deleteAllMenu()
         UI_Menu;
     }
 }
+
 void ManageCat()
 {
     puts("\t\t\t==============================");
@@ -1120,6 +1196,7 @@ void ManageCat()
         break;
     }
 }
+
 void ManageProduct()
 {
     puts("\t\t\t==============================");
@@ -1262,7 +1339,7 @@ void UI_Menu()
 
 void CheckShowData(int opt)
 {
-    //! 1-cat, 2- product, 3 - employees
+    //! 1 - cat, 2 - product, 3 - employees
     printf("\nDo you want to show data:  ");
     fflush(stdin);
     char check;
@@ -1285,7 +1362,7 @@ void CheckShowData(int opt)
 
 void update(int opt)
 {
-    //! 1- cat, 2 - product, 3- employee
+    //! 1 - cat, 2 - product, 3 - employee
     int id;
     int isHave = 0;
     puts("\t\t\t==============================");
@@ -1368,16 +1445,17 @@ void update(int opt)
                 printf("\n*********************************************");
                 printf("\nEmployee ID %d", z.id);
                 printf("\nEmployee name: %s", z.name);
-                printf("\nEmployee age: %d VND", z.age);
-                printf("\nEmployee birthday: %s", z.birthdate);
-                printf("\nEmployee home town: %s", z.homeTown);
+                if (z.gender == 1)
+                    printf("\n- Gender: Male");
+                else
+                    printf("\n- Gender: Female");
+                printf("\nEmployee birthdate: %s", z.birthdate);
+                printf("\nEmployee address: %s", z.Address);
                 isHave++;
             }
         }
     }
-
     fclose(file);
-
     if (!isHave)
     {
         printf("\nNot found");
@@ -1452,22 +1530,21 @@ void update(int opt)
             printf("Input your name employee: ");
             fflush(stdin);
             gets(Data3.name);
-            printf("\nInput the age of your employee: ");
             fflush(stdin);
-            scanf("%d", &Data3.age);
-            while (Data3.age <= 0)
+            printf("\nInput the gender of your employee (0-female or 1-male): ");
+            scanf("%d", &Data3.gender);
+            while (Data3.gender != 0 && Data3.gender != 1)
             {
-                printf("\nInvalid value of age, please re-input it");
-                scanf("%d", &Data3.age);
+                printf("\nInvalid option, re-input the gender of your employee");
+                scanf("%d", &Data3.gender);
             }
-            printf("\nInput the birthday of your employee(dd/mm/yy): ");
+            printf("\nInput the birthdate of your employee(dd/mm/yy): ");
             fflush(stdin);
             gets(Data3.birthdate);
-            printf("\nInput the home town of your product: ");
-            gets(Data3.homeTown);
+            printf("\nInput the address of your product: ");
+            gets(Data3.Address);
             Data3.id = id;
         }
-
         FILE *file = fopen(opt == 1 ? fileCatData : opt == 2 ? fileProductData
                                                              : fileEmployeeData,
                            "rb+");
@@ -1516,7 +1593,6 @@ void update(int opt)
                 }
             }
         }
-
         fclose(file);
         fclose(fileTemp);
         if (opt == 1)
@@ -1534,7 +1610,6 @@ void update(int opt)
             remove(fileEmployeeData);
             rename(tempEmployeeData, fileEmployeeData);
         }
-
         ShowData(opt);
         printf("\nPress any key to Continue to Menu\n");
         if (getch())

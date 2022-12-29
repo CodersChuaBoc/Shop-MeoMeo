@@ -1,2 +1,0 @@
-
-    scanf("%s",username);
