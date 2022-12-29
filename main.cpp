@@ -75,7 +75,7 @@ struct employee
 typedef struct employee EPE;
 EPE z;
 
-struct login                           // before the first use of `l`.
+struct login // before the first use of `l`.
 {
     char username[30];
     char password[20];
@@ -158,107 +158,109 @@ int GenerateId(int opt)
     }
 }
 
-
-void login ()
+void login()
 {
-    char username[30],password[20];
+    char username[30], password[20];
     FILE *log;
 
-    log = fopen(fileUserData,"r");
+    log = fopen(fileUserData, "rb");
     if (log == NULL)
     {
         fputs("Error at opening File!", stderr);
         exit(1);
     }
     struct login l;
-    printf("\nLogin with Username & Password\n");
+    puts("--------------------------------------------");
+    printf("\n    Login with Username & Password\n");
+    puts("--------------------------------------------");
     printf("\nUsername:");
-    scanf("%s",username);
+    scanf("%s", username);
     printf("\nPassword:");
-    scanf("%s",password);
-    while(fread(&l,sizeof(l),1,log))
-        {
-        if(strcmp(username,l.username)==0 && strcmp(password,l.password)==0)
+    scanf("%s", password);
+    while (fread(&l, sizeof(l), 1, log))
+    {
+        if (strcmp(username, l.username) == 0 && strcmp(password, l.password) == 0)
 
-            {   
-                printf("\nSuccessful Login\n");
-                printf("\nPress any key to continue...");
-                getch();
-                system("cls");
-            }
-        else 
-            {
-                printf("\nIncorrect Login Details\nPlease enter the correct credentials\n");
-                getch();
-                system("cls");
-                login();
-            }
+        {
+            printf("\nSuccessful Login!!\n");
+            printf("\nPress any key to continue to Menu...");
+            getch();
+            system("cls");
+            UI_Menu();
         }
+        else
+        {
+            printf("\nIncorrect Login Details\nPlease enter the correct credentials\n");
+            getch();
+            system("cls");
+            login();
+        }
+    }
 
     fclose(log);
 
     return;
 }
 
-
 void registration()
 {
     FILE *log;
 
-    log=fopen(fileUserData,"w");
+    log = fopen(fileUserData, "w");
     if (log == NULL)
     {
         fputs("Error at opening File!", stderr);
         exit(1);
     }
 
-
     struct login l;
-    printf("******** Registration ********");
+    puts("-----------------------------------------");
+    printf("         Registration         \n");
+    puts("-----------------------------------------");
     printf("\nYou need to enter some details for registration:");
-    printf("\nEnter Username:\n");
-    scanf("%s",l.username);
-    printf("\nEnter Password:\n");
-    scanf("%s",l.password);
+    printf("\nEnter Username:  ");
+    scanf("%s", l.username);
+    printf("\nEnter Password:  ");
+    scanf("%s", l.password);
 
-
-    fwrite(&l,sizeof(l),1,log);
+    fwrite(&l, sizeof(l), 1, log);
     fclose(log);
 
     printf("\nRegistration Successful!\n");
-    printf("Press any key to continue...");
+    printf("Press any key to continue to Login!!!");
     getch();
-    getchar();
     system("CLS");
     login();
 }
 void userAuthMenu()
 {
     int choice;
-    printf("\n***** Welcome to Shop-meomeo ****");
+    puts("-----------------------------------------");
+    printf("      Welcome to Shop-meomeo\n");
+    puts("-----------------------------------------");
     printf("\n1.Login");
     printf("\n2.Register");
     printf("\n3.Exit");
     printf("\nEnter your choice: ");
-    scanf("%d",&choice);
-    while (choice < 1 || choice > 6)
-        {
-            printf("Invalid choice, Please try again:  ");
-            scanf("%d", &choice);
-        }
-        system("cls");
-        if (choice == 1)
-        {
-            login();
-        }
-        else if (choice == 2)
-        {
-            registration();
-        }
-        else if (choice == 3)
-        {
-            exit(0);
-        }
+    scanf("%d", &choice);
+    while (choice < 1 || choice > 3)
+    {
+        printf("Invalid choice, Please try again:  ");
+        scanf("%d", &choice);
+    }
+    system("cls");
+    if (choice == 1)
+    {
+        login();
+    }
+    else if (choice == 2)
+    {
+        registration();
+    }
+    else if (choice == 3)
+    {
+        exit(0);
+    }
 }
 
 void CreateProduct()
@@ -815,23 +817,23 @@ void ShowData(int opt)
 }
 
 void deleteAllEmployee()
+{
+    system("cls");
+    char opt2;
+    printf("\nAre you sure to delete all employee? (Y/N):");
+    scanf("%s", &opt2);
+    switch (opt2)
     {
-        system("cls");
-        char opt2;
-        printf("\nAre you sure to delete all employee? (Y/N):");
-        scanf("%s",&opt2);
-        switch (opt2)
-        {
     case 'y':
     case 'Y':
-        if (remove("C:/KittyCat/EmployeeData") == 0) 
-            {
-                printf("The file is deleted successfully.");
-            } 
-        else 
-            { 
-                printf("The file is not deleted.");
-            }
+        if (remove("C:/KittyCat/EmployeeData") == 0)
+        {
+            printf("The file is deleted successfully.");
+        }
+        else
+        {
+            printf("The file is not deleted.");
+        }
         getch();
         system("cls");
         printf("\nReturn to main menu...");
@@ -852,23 +854,23 @@ void deleteAllEmployee()
 }
 
 void deleteAllProducts()
+{
+    system("cls");
+    char opt2;
+    printf("\nAre you sure to delete all products? (Y/N):");
+    scanf("%s", &opt2);
+    switch (opt2)
     {
-        system("cls");
-        char opt2;
-        printf("\nAre you sure to delete all products? (Y/N):");
-        scanf("%s",&opt2);
-        switch (opt2)
-        {
     case 'y':
     case 'Y':
-        if (remove("C:/KittyCat/ProductData") == 0) 
-            {
-                printf("The file is deleted successfully.");
-            } 
-        else 
-            { 
-                printf("The file is not deleted.");
-            }
+        if (remove("C:/KittyCat/ProductData") == 0)
+        {
+            printf("The file is deleted successfully.");
+        }
+        else
+        {
+            printf("The file is not deleted.");
+        }
         getch();
         system("cls");
         printf("\nReturn to main menu...");
@@ -889,23 +891,23 @@ void deleteAllProducts()
 }
 
 void deleteAllCats()
+{
+    system("cls");
+    char opt2;
+    printf("\nAre you sure to delete all kitty cat? (Y/N):");
+    scanf("%s", &opt2);
+    switch (opt2)
     {
-        system("cls");
-        char opt2;
-        printf("\nAre you sure to delete all kitty cat? (Y/N):");
-        scanf("%s",&opt2);
-        switch (opt2)
-        {
     case 'y':
     case 'Y':
-        if (remove("C:/KittyCat/CatData") == 0) 
-            {
-                printf("The file is deleted successfully.");
-            } 
-        else 
-            { 
-                printf("The file is not deleted.");
-            }
+        if (remove("C:/KittyCat/CatData") == 0)
+        {
+            printf("The file is deleted successfully.");
+        }
+        else
+        {
+            printf("The file is not deleted.");
+        }
         getch();
         system("cls");
         printf("\nReturn to main menu...");
@@ -927,113 +929,116 @@ void deleteAllCats()
 
 void deleteOneEmployee()
 {
-        int ID;
-        printf("Enter your id :");
-        scanf("%d", &ID);
-        FILE *fptr;
-        FILE *fptrTemp;
-        fptr = fopen(fileEmployeeData, "rb");
-        fptrTemp = fopen(tempEmployeeData, "wb");
-        if (fptr == NULL)
-        {
-            printf("\nError opening/creating file!!");
-            fclose(fptr);
-            exit(0);
-        }
-        else while (fread(&z, sizeof(z), 1, fptr) == 1)
-            {
-                if (ID != z.id)
-                {
-                    fwrite(&z, sizeof(z), 1, fptrTemp);
-                }
-            }
+    int ID;
+    printf("Enter your id :");
+    scanf("%d", &ID);
+    FILE *fptr;
+    FILE *fptrTemp;
+    fptr = fopen(fileEmployeeData, "rb");
+    fptrTemp = fopen(tempEmployeeData, "wb");
+    if (fptr == NULL)
+    {
+        printf("\nError opening/creating file!!");
         fclose(fptr);
-        if (remove(fileCatData) == 0)
+        exit(0);
+    }
+    else
+        while (fread(&z, sizeof(z), 1, fptr) == 1)
         {
-            system("cls");
-            printf("\nDeleted successfully!");
-            fflush(stdin);
-            fclose(fptrTemp);
-            rename(tempEmployeeData,fileEmployeeData);
+            if (ID != z.id)
+            {
+                fwrite(&z, sizeof(z), 1, fptrTemp);
+            }
         }
-        else
-        {
+    fclose(fptr);
+    if (remove(fileCatData) == 0)
+    {
+        system("cls");
+        printf("\nDeleted successfully!");
+        fflush(stdin);
+        fclose(fptrTemp);
+        rename(tempEmployeeData, fileEmployeeData);
+    }
+    else
+    {
         printf("\nUnable to delete the file");
-        }
+    }
 }
 
 void deleteOneCat()
 {
-        int ID;
-        printf("Enter your id :");
-        scanf("%d", &ID);
-        FILE *fptr;
-        FILE *fptrTemp;
-        fptr = fopen(fileCatData, "rb");
-        fptrTemp = fopen(tempCatData, "wb");
-        if (fptr == NULL)
-        {
-            printf("\nError opening/creating file!!");
-            fclose(fptr);
-            exit(0);
-        }
-        else while (fread(&x, sizeof(x), 1, fptr) == 1)
-            {
-                if (ID != x.id)
-                {
-                    fwrite(&x, sizeof(x), 1, fptrTemp);
-                }
-            }
+    int ID;
+    printf("Enter your id :");
+    scanf("%d", &ID);
+    FILE *fptr;
+    FILE *fptrTemp;
+    fptr = fopen(fileCatData, "rb");
+    fptrTemp = fopen(tempCatData, "wb");
+    if (fptr == NULL)
+    {
+        printf("\nError opening/creating file!!");
         fclose(fptr);
-        if (remove(fileCatData) == 0)
+        exit(0);
+    }
+    else
+        while (fread(&x, sizeof(x), 1, fptr) == 1)
         {
-            system("cls");
-            printf("\nDeleted successfully!");
-            fflush(stdin);
-            fclose(fptrTemp);
-            rename(tempCatData,fileCatData);
+            if (ID != x.id)
+            {
+                fwrite(&x, sizeof(x), 1, fptrTemp);
+            }
         }
-        else
-        {
+    fclose(fptr);
+    if (remove(fileCatData) == 0)
+    {
+        system("cls");
+        printf("\nDeleted successfully!");
+        fflush(stdin);
+        fclose(fptrTemp);
+        rename(tempCatData, fileCatData);
+    }
+    else
+    {
         printf("\nUnable to delete the file");
-        }
+    }
 }
 
 void deleteOneProduct()
 {
-        int ID;
-        printf("Enter your id :");
-        scanf("%d", &ID);
-        FILE *fptr;
-        FILE *fptrTemp;
-        fptr = fopen(fileProductData, "rb");
-        fptrTemp = fopen(tempProductData, "wb");
-        if (fptr == NULL)
-        {
-            printf("\nError opening/creating file!!");
-            fclose(fptr);
-            exit(0);
-        }
-        else while (fread(&y, sizeof(y), 1, fptr) == 1)
-            {
-                if (ID != y.id)
-                {
-                    fwrite(&y, sizeof(y), 1, fptrTemp);
-                }
-            }
+    int ID;
+    printf("Enter your id :");
+    scanf("%d", &ID);
+    FILE *fptr;
+    FILE *fptrTemp;
+    fptr = fopen(fileProductData, "rb");
+    fptrTemp = fopen(tempProductData, "wb");
+    if (fptr == NULL)
+    {
+        printf("\nError opening/creating file!!");
         fclose(fptr);
-        if (remove(fileProductData) == 0)
+        exit(0);
+    }
+    else
+        while (fread(&y, sizeof(y), 1, fptr) == 1)
         {
-            system("cls");
-            printf("\nDeleted successfully!");
-            fflush(stdin);
-            fclose(fptrTemp);
-            rename(tempProductData,fileProductData);
+            if (ID != y.id)
+            {
+                fwrite(&y, sizeof(y), 1, fptrTemp);
+            }
         }
-        else
-        {
+    fclose(fptr);
+    if (remove(fileProductData) == 0)
+    {
+        system("cls");
+        printf("\nDeleted successfully!");
+        fflush(stdin);
+        fclose(fptrTemp);
+        rename(tempProductData, fileProductData);
+    }
+    else
+    {
         printf("\nUnable to delete the file");
-        }
+    }
 }
 
 void deleteAllMenu()
@@ -1052,28 +1057,28 @@ void deleteAllMenu()
         scanf("%d", &u);
     }
     if (u == 1)
-        {
-            deleteAllCats();
-            exit(0);
-        }
+    {
+        deleteAllCats();
+        exit(0);
+    }
     else if (u == 2)
-        {
-            deleteAllProducts();
-            exit(0);
-        }
+    {
+        deleteAllProducts();
+        exit(0);
+    }
     else if (u == 3)
-        {
-            deleteAllEmployee();
-            exit(0);
-        }
+    {
+        deleteAllEmployee();
+        exit(0);
+    }
     else if (u == 4)
 
-        {
-            system("cls");
-            printf("Return to main menu....");
-            getch();
-            UI_Menu;
-        }
+    {
+        system("cls");
+        printf("Return to main menu....");
+        getch();
+        UI_Menu;
+    }
 }
 void ManageCat()
 {
