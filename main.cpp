@@ -82,7 +82,9 @@ struct login // before the first use of `l`.
 };
 
 void UI_Menu();
+void ManageEmployees();
 void update(int opt);
+
 void ExitToMenu()
 {
     char opt;
@@ -162,14 +164,17 @@ void login()
 {
     char username[30], password[20];
     FILE *log;
-    log = fopen(fileUserData, "r");
+
+    log = fopen(fileUserData, "rb");
     if (log == NULL)
     {
         fputs("Error at opening File!", stderr);
         exit(1);
     }
     struct login l;
-    printf("\nLogin with Username & Password\n");
+    puts("--------------------------------------------");
+    printf("    Login with Username & Password\n");
+    puts("--------------------------------------------");
     printf("\nUsername:");
     scanf("%s", username);
     printf("\nPassword:");
@@ -177,11 +182,13 @@ void login()
     while (fread(&l, sizeof(l), 1, log))
     {
         if (strcmp(username, l.username) == 0 && strcmp(password, l.password) == 0)
+
         {
-            printf("\nSuccessful Login\n");
-            printf("\nPress any key to continue...");
+            printf("\nSuccessful Login!!\n");
+            printf("\nPress any key to continue to Menu...");
             getch();
             system("cls");
+            UI_Menu();
         }
         else
         {
@@ -191,46 +198,54 @@ void login()
             login();
         }
     }
+
     fclose(log);
+
     return;
 }
 
 void registration()
 {
     FILE *log;
+
     log = fopen(fileUserData, "w");
     if (log == NULL)
     {
         fputs("Error at opening File!", stderr);
         exit(1);
     }
+
     struct login l;
-    printf("******** Registration ********");
+    puts("-----------------------------------------");
+    printf("         Registration         \n");
+    puts("-----------------------------------------");
     printf("\nYou need to enter some details for registration:");
-    printf("\nEnter Username:\n");
+    printf("\nEnter Username:  ");
     scanf("%s", l.username);
-    printf("\nEnter Password:\n");
+    printf("\nEnter Password:  ");
     scanf("%s", l.password);
+
     fwrite(&l, sizeof(l), 1, log);
     fclose(log);
+
     printf("\nRegistration Successful!\n");
-    printf("Press any key to continue...");
+    printf("Press any key to continue to Login!!!");
     getch();
-    getchar();
     system("CLS");
     login();
 }
-
 void userAuthMenu()
 {
     int choice;
-    printf("\n***** Welcome to Shop-meomeo ****");
+    puts("-----------------------------------------");
+    printf("      Welcome to Shop-meomeo\n");
+    puts("-----------------------------------------");
     printf("\n1.Login");
     printf("\n2.Register");
     printf("\n3.Exit");
     printf("\nEnter your choice: ");
     scanf("%d", &choice);
-    while (choice < 1 || choice > 6)
+    while (choice < 1 || choice > 3)
     {
         printf("Invalid choice, Please try again:  ");
         scanf("%d", &choice);
@@ -252,6 +267,7 @@ void userAuthMenu()
 
 void CreateProduct()
 {
+    system("cls");
     char check;
     int productId = GenerateId(2);
     // char dir[30] = fileProductData;
@@ -353,6 +369,7 @@ SAVE:
 
 void CreateCat()
 {
+    system("cls");
     char check;
     int CatId = GenerateId(1);
     // char dir[20] = fileCatData;
@@ -473,23 +490,23 @@ REINPUT:
 
 void CreateEmployee()
 {
+    system("cls");
     char check;
     int employeeId = GenerateId(3);
     FILE *fptr;
     if ((fptr = fopen(fileEmployeeData, "ab")) == NULL)
     {
-        printf("Error opening/creating file!!\n");
+        printf("\nError opening/creating file!!\n");
         exit(0);
     }
     puts("\t\t\t==============================");
     puts("\t\t\t     Create a new Employee  ");
     puts("\t\t\t==============================");
     puts("\t\t\t* * * * * * * * * * * * * * * *");
-    // input data of cat
-    printf("\nInput your Employee: ");
+    // input data of employee
+    printf("\nInput name your Employee: ");
     fflush(stdin);
     gets(z.name);
-    printf("\nInput the age of your employee: ");
     fflush(stdin);
     printf("\nInput the gender of your employee (0-female or 1-male): ");
     scanf("%d", &z.gender);
@@ -521,17 +538,17 @@ void CreateEmployee()
     printf("\nEmployee birthdate: %s", z.birthdate);
     printf("\nEmployee address: %s", z.Address);
     printf("\n*********************************************");
-    printf("\nDo you want to save this product(Y/N): ");
-    fflush(stdin);
+    printf("\nDo you want to save this employee(Y/N): ");
 SAVE:
     while (1)
     {
+        fflush(stdin);
         scanf("%c", &check);
         switch (check)
         {
         case 'y':
         case 'Y':
-            fwrite(&y, sizeof(y), 1, fptr);
+            fwrite(&z, sizeof(z), 1, fptr);
             printf("\nEmployee is saved");
             fclose(fptr);
             break;
@@ -563,6 +580,7 @@ SAVE:
             break;
         case 'n':
         case 'N':
+            ManageEmployees();
             break;
         default:
             printf("\nInvalid option, re-input your choice: ");
@@ -883,12 +901,15 @@ void ShowData(int opt)
         {
             printf("%d\t", z.id);
             printf("%s\t\t\t", z.name);
-            z.gender ? printf("Male") : printf("Female");
+            z.gender ? printf("Male\t\t") : printf("Female\t\t");
             printf("%s\t\t", z.birthdate);
             printf("%s\t\t", z.Address);
             printf("\n");
         }
     }
+    printf("\n\n\n*********************************************\n");
+    printf("\nPress any key to continue: ");
+    getch();
     fclose(fptr);
 }
 
@@ -902,13 +923,13 @@ void deleteAllEmployee()
     {
     case 'y':
     case 'Y':
-        if (remove("C:/KittyCat/EmployeeData") == 0)
+        if (remove(fileEmployeeData) == 0)
         {
-            printf("The file is deleted successfully.");
+            printf("\nThe file is deleted successfully.");
         }
         else
         {
-            printf("The file is not deleted.");
+            printf("\nThe file is not deleted.");
         }
         getch();
         system("cls");
@@ -939,7 +960,7 @@ void deleteAllProducts()
     {
     case 'y':
     case 'Y':
-        if (remove("C:/KittyCat/ProductData") == 0)
+        if (remove(fileProductData) == 0)
         {
             printf("The file is deleted successfully.");
         }
@@ -976,13 +997,13 @@ void deleteAllCats()
     {
     case 'y':
     case 'Y':
-        if (remove("C:/KittyCat/CatData") == 0)
+        if (remove(fileCatData) == 0)
         {
-            printf("The file is deleted successfully.");
+            printf("\nThe file is deleted successfully.");
         }
         else
         {
-            printf("The file is not deleted.");
+            printf("\nThe file is not deleted.");
         }
         getch();
         system("cls");
@@ -1006,7 +1027,7 @@ void deleteAllCats()
 void deleteOneEmployee()
 {
     int ID;
-    printf("Enter your id :");
+    printf("\nEnter your id :");
     scanf("%d", &ID);
     FILE *fptr;
     FILE *fptrTemp;
@@ -1044,7 +1065,7 @@ void deleteOneEmployee()
 void deleteOneCat()
 {
     int ID;
-    printf("Enter your id :");
+    printf("\nEnter your id :");
     scanf("%d", &ID);
     FILE *fptr;
     FILE *fptrTemp;
@@ -1082,7 +1103,7 @@ void deleteOneCat()
 void deleteOneProduct()
 {
     int ID;
-    printf("Enter your id :");
+    printf("\nEnter your id :");
     scanf("%d", &ID);
     FILE *fptr;
     FILE *fptrTemp;
@@ -1119,6 +1140,7 @@ void deleteOneProduct()
 
 void deleteAllMenu()
 {
+    system("cls");
     int u;
     puts("\t\t\t==============================");
     puts("\t\t\t       Delete All Data        ");
@@ -1263,7 +1285,7 @@ void ManageEmployees()
         CreateEmployee();
         break;
     case 3:
-        searchProducts();
+        searchEmployees();
         break;
     case 4:
         update(3);
@@ -1284,15 +1306,16 @@ void UI_Menu()
     // demo UI
     while (1)
     {
+        system("cls");
         puts("\t\t\t===============================");
         puts("\t\t\t      WELCOME TO THE SHOP  ");
         puts("\t\t\t===============================");
         puts("\t\t\t* * * * * * * * * * * * * * * *");
-        puts("\t\t\t1. Manage Cat\n\n\t\t\t2. Manage Products\n\n\t\t\t3. Your Cart\n\n\t\t\t4. Manage Finance\n\n\t\t\t5. Manage Client\n\n\t\t\t6.Delete All Data\n\n\t\t\t7. Exit");
+        puts("\t\t\t1. Manage Cat\n\n\t\t\t2. Manage Products\n\n\t\t\t3. Manage Employee\n\n\t\t\t4. Delete All Data\n\n\t\t\t5. Exit");
         printf("\t\t\tSelect your choice:  ");
         int u;
         scanf("%d", &u);
-        while (u < 1 || u > 7)
+        while (u < 1 || u > 5)
         {
             printf("Invalid choice, Please try again:  ");
             scanf("%d", &u);
@@ -1301,42 +1324,25 @@ void UI_Menu()
         if (u == 1)
         {
             ManageCat();
-            exit(0);
         }
         else if (u == 2)
         {
             ManageProduct();
-            exit(0);
         }
         else if (u == 3)
         {
-            printf("Your choice is 3");
-            exit(0);
+            ManageEmployees();
         }
         else if (u == 4)
-
         {
-            printf("Your choice is 4");
-            exit(0);
+            deleteAllMenu();
         }
         else if (u == 5)
         {
-            printf("Your choice is 5");
-            exit(0);
-        }
-        else if (u == 6)
-        {
-            printf("Your choice is 6");
-            exit(0);
-        }
-        else if (u == 7)
-        {
-            printf("exit");
             exit(0);
         }
     }
 }
-
 void CheckShowData(int opt)
 {
     //! 1 - cat, 2 - product, 3 - employees
@@ -1392,7 +1398,7 @@ void update(int opt)
         delay(3);
         UI_Menu();
     }
-    printf("Please, Enter your id: ");
+    printf("\nPlease, Enter your id: ");
     scanf("%d", &id);
     if (opt == 1)
     {
@@ -1527,7 +1533,7 @@ void update(int opt)
         else if (opt == 3)
         {
             printf("\nUpdate your Employee: ");
-            printf("Input your name employee: ");
+            printf("\nInput your name employee: ");
             fflush(stdin);
             gets(Data3.name);
             fflush(stdin);
@@ -1541,7 +1547,7 @@ void update(int opt)
             printf("\nInput the birthdate of your employee(dd/mm/yy): ");
             fflush(stdin);
             gets(Data3.birthdate);
-            printf("\nInput the address of your product: ");
+            printf("\nInput the address of your employee: ");
             gets(Data3.Address);
             Data3.id = id;
         }
@@ -1627,7 +1633,5 @@ int main()
 {
     create_folder();
     userAuthMenu();
-    // deleteAllMenu();
-    // UI_Menu();
     return 0;
 }
