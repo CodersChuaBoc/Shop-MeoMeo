@@ -934,6 +934,7 @@ void deleteAllEmployee()
     system("cls");
     char opt2;
     printf("\n> Are you sure to delete all the employees? (Y/N): ");
+    HEHE:
     scanf("%s", &opt2);
     switch (opt2)
     {
@@ -963,6 +964,10 @@ void deleteAllEmployee()
         system("cls");
         UI_Menu();
         break;
+    default:
+        printf("\nInvalid option, re-input your choice: ");
+        goto HEHE;
+        break;
     }
 }
 
@@ -971,6 +976,7 @@ void deleteAllProducts()
     system("cls");
     char opt2;
     printf("\n> Are you sure to delete all the products? (Y/N): ");
+    HOHO:
     scanf("%s", &opt2);
     switch (opt2)
     {
@@ -1000,6 +1006,10 @@ void deleteAllProducts()
         system("cls");
         UI_Menu();
         break;
+    default:
+        printf("\nInvalid option, re-input your choice: ");
+        goto HOHO;
+        break;   
     }
 }
 
@@ -1008,6 +1018,7 @@ void deleteAllCats()
     system("cls");
     char opt2;
     printf("\n> Are you sure to delete all the cats? (Y/N): ");
+    HIHI:
     scanf("%s", &opt2);
     switch (opt2)
     {
@@ -1037,13 +1048,17 @@ void deleteAllCats()
         system("cls");
         UI_Menu();
         break;
+    default:
+        printf("\nInvalid option, re-input your choice: ");
+        goto HIHI;
+        break;   
     }
 }
 
 void deleteOneEmployee()
 {
     int ID;
-    printf("\n> Enter Employee ID that you want to delete: ");
+    printf("\nEnter your id :");
     scanf("%d", &ID);
     FILE *fptr;
     FILE *fptrTemp;
@@ -1051,7 +1066,7 @@ void deleteOneEmployee()
     fptrTemp = fopen(tempEmployeeData, "wb");
     if (fptr == NULL)
     {
-        printf("\nError opening/ creating file!");
+        printf("\nError opening/creating file!!");
         fclose(fptr);
         exit(0);
     }
@@ -1064,24 +1079,25 @@ void deleteOneEmployee()
             }
         }
     fclose(fptr);
-    if (remove(fileCatData) == 0)
+    if (remove(fileEmployeeData) == 0)
     {
         system("cls");
-        printf("\n- Deleted successfully!");
+        printf("\nDeleted successfully!");
+        getch();
         fflush(stdin);
         fclose(fptrTemp);
         rename(tempEmployeeData, fileEmployeeData);
     }
     else
     {
-        printf("\n- Unable to delete the file!");
+        printf("\nUnable to delete the file");
     }
 }
 
 void deleteOneCat()
 {
     int ID;
-    printf("\n> Enter Cat ID that you want to delete: ");
+    printf("\nEnter your id :");
     scanf("%d", &ID);
     FILE *fptr;
     FILE *fptrTemp;
@@ -1089,7 +1105,7 @@ void deleteOneCat()
     fptrTemp = fopen(tempCatData, "wb");
     if (fptr == NULL)
     {
-        printf("\nError opening/ creating file!");
+        printf("\nError opening/creating file!!");
         fclose(fptr);
         exit(0);
     }
@@ -1105,21 +1121,22 @@ void deleteOneCat()
     if (remove(fileCatData) == 0)
     {
         system("cls");
-        printf("\n- Deleted successfully!");
+        printf("\nDeleted successfully!");
+        getch();
         fflush(stdin);
         fclose(fptrTemp);
         rename(tempCatData, fileCatData);
     }
     else
     {
-        printf("\n- Unable to delete the file");
+        printf("\nUnable to delete the file");
     }
 }
 
 void deleteOneProduct()
 {
     int ID;
-    printf("\n> Enter Product ID that you want to delete: ");
+    printf("\nEnter your id :");
     scanf("%d", &ID);
     FILE *fptr;
     FILE *fptrTemp;
@@ -1127,7 +1144,7 @@ void deleteOneProduct()
     fptrTemp = fopen(tempProductData, "wb");
     if (fptr == NULL)
     {
-        printf("\nError opening/ creating file!");
+        printf("\nError opening/creating file!!");
         fclose(fptr);
         exit(0);
     }
@@ -1143,14 +1160,15 @@ void deleteOneProduct()
     if (remove(fileProductData) == 0)
     {
         system("cls");
-        printf("\n- Deleted successfully!");
+        printf("\nDeleted successfully!");
+        getch();
         fflush(stdin);
         fclose(fptrTemp);
         rename(tempProductData, fileProductData);
     }
     else
     {
-        printf("\n- Unable to delete the file");
+        printf("\nUnable to delete the file");
     }
 }
 
