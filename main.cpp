@@ -172,6 +172,7 @@ void login()
     if (log == NULL)
     {
         fputs("Error at opening File!", stderr);
+        getch();
         exit(1);
     }
     struct login l;
