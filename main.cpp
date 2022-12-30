@@ -1219,6 +1219,7 @@ void deleteAllMenu()
 
 void ManageCat()
 {
+    system("cls");
     puts("------------------------------------------");
     printf("             Cats Managements\n");
     puts("------------------------------------------");
@@ -1257,6 +1258,7 @@ void ManageCat()
 
 void ManageProduct()
 {
+    system("cls");
     puts("------------------------------------------");
     printf("          Products Managements\n");
     puts("------------------------------------------");
@@ -1295,6 +1297,7 @@ void ManageProduct()
 
 void ManageEmployees()
 {
+    system("cls");
     puts("------------------------------------------");
     printf("          Employees Managements\n");
     puts("------------------------------------------");
@@ -1480,7 +1483,7 @@ void update(int opt)
         {
             if (id == z.id)
             {
-                printf("\n\t    Information of %s", z.name);
+                printf("\n         Information of %s", z.name);
                 printf("\n*********************************************");
                 printf("\n- Employee's ID: %d", z.id);
                 printf("\n- Employee's name: %s", z.name);
@@ -1508,7 +1511,7 @@ void update(int opt)
         EPE Data3;
         if (opt == 1)
         {
-            printf("\n       Update your cat's information");
+            printf("\n\n       Update your cat's information");
             printf("\n********************************************");
             fflush(stdin);
             printf("\n> Input cat's name: ");
@@ -1538,7 +1541,7 @@ void update(int opt)
         }
         else if (opt == 2)
         {
-            printf("\n     Update your products's information");
+            printf("\n\n     Update your products's information");
             printf("\n********************************************");
             fflush(stdin);
             printf("\n> Input product's name: ");
@@ -1566,7 +1569,7 @@ void update(int opt)
         }
         else if (opt == 3)
         {
-            printf("\n    Update your employee's information");
+            printf("\n\n    Update your employee's information");
             printf("\n********************************************");
             printf("\n> Input employee's name: ");
             fflush(stdin);
