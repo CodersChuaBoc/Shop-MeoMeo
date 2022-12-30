@@ -127,7 +127,7 @@ void SubId(int opt)
     fclose(fptr);
     fptr = fopen(opt == 1 ? fileCatID : opt == 2 ? fileProductID
                                                  : fileEmployeeID,
-                 "wb");
+                 "wb+");
     fprintf(fptr, "%d", fileID);
     fclose(fptr);
 }
@@ -144,7 +144,7 @@ int GenerateId(int opt)
         int id = 1;
         fptr = fopen(opt == 1 ? fileCatID : opt == 2 ? fileProductID
                                                      : fileEmployeeID,
-                     "wb");
+                     "wb+");
         fprintf(fptr, "%d", id);
         fclose(fptr);
         return 1;
@@ -156,7 +156,7 @@ int GenerateId(int opt)
         fclose(fptr);
         fptr = fopen(opt == 1 ? fileCatID : opt == 2 ? fileProductID
                                                      : fileEmployeeID,
-                     "wb");
+                     "wb+");
         fprintf(fptr, "%d", fileID);
         fclose(fptr);
         return fileID;
@@ -277,7 +277,7 @@ void CreateProduct()
     int productId = GenerateId(2);
     // char dir[30] = fileProductData;
     FILE *fptr;
-    if ((fptr = fopen(fileProductData, "ab")) == NULL)
+    if ((fptr = fopen(fileProductData, "ab+")) == NULL)
     {
         printf("Error opening/ creating file!\n");
         exit(0);
@@ -378,7 +378,7 @@ void CreateCat()
     int CatId = GenerateId(1);
     // char dir[20] = fileCatData;
     FILE *fptr;
-    if ((fptr = fopen(fileCatData, "ab")) == NULL)
+    if ((fptr = fopen(fileCatData, "ab+")) == NULL)
     {
         printf("Error opening/ creating file!!\n");
         exit(0);
@@ -497,7 +497,7 @@ void CreateEmployee()
     char check;
     int employeeId = GenerateId(3);
     FILE *fptr;
-    if ((fptr = fopen(fileEmployeeData, "ab")) == NULL)
+    if ((fptr = fopen(fileEmployeeData, "ab+")) == NULL)
     {
         printf("\nError opening/ creating file!\n");
         exit(0);
@@ -875,7 +875,12 @@ void ShowData(int opt)
                                                         : fileEmployeeData,
                       "rb")) == NULL)
     {
-        printf("File not found!");
+        printf("\nFile not found!/Not exist Data!!\n");
+        printf("\nExit to menu!!");
+        if (getch())
+        {
+            UI_Menu();
+        }
     }
     if (opt == 2)
     {
@@ -935,7 +940,7 @@ void deleteAllEmployee()
     system("cls");
     char opt2;
     printf("\n> Are you sure to delete all the employees? (Y/N): ");
-    HEHE:
+HEHE:
     scanf("%s", &opt2);
     switch (opt2)
     {
@@ -977,7 +982,7 @@ void deleteAllProducts()
     system("cls");
     char opt2;
     printf("\n> Are you sure to delete all the products? (Y/N): ");
-    HOHO:
+HOHO:
     scanf("%s", &opt2);
     switch (opt2)
     {
@@ -1010,7 +1015,7 @@ void deleteAllProducts()
     default:
         printf("\nInvalid option, re-input your choice: ");
         goto HOHO;
-        break;   
+        break;
     }
 }
 
@@ -1019,7 +1024,7 @@ void deleteAllCats()
     system("cls");
     char opt2;
     printf("\n> Are you sure to delete all the cats? (Y/N): ");
-    HIHI:
+HIHI:
     scanf("%s", &opt2);
     switch (opt2)
     {
@@ -1052,7 +1057,7 @@ void deleteAllCats()
     default:
         printf("\nInvalid option, re-input your choice: ");
         goto HIHI;
-        break;   
+        break;
     }
 }
 
@@ -1064,7 +1069,7 @@ void deleteOneEmployee()
     FILE *fptr;
     FILE *fptrTemp;
     fptr = fopen(fileEmployeeData, "rb");
-    fptrTemp = fopen(tempEmployeeData, "wb");
+    fptrTemp = fopen(tempEmployeeData, "wb+");
     if (fptr == NULL)
     {
         printf("\nError opening/creating file!!");
@@ -1103,7 +1108,7 @@ void deleteOneCat()
     FILE *fptr;
     FILE *fptrTemp;
     fptr = fopen(fileCatData, "rb");
-    fptrTemp = fopen(tempCatData, "wb");
+    fptrTemp = fopen(tempCatData, "wb+");
     if (fptr == NULL)
     {
         printf("\nError opening/creating file!!");
@@ -1142,7 +1147,7 @@ void deleteOneProduct()
     FILE *fptr;
     FILE *fptrTemp;
     fptr = fopen(fileProductData, "rb");
-    fptrTemp = fopen(tempProductData, "wb");
+    fptrTemp = fopen(tempProductData, "wb+");
     if (fptr == NULL)
     {
         printf("\nError opening/creating file!!");
@@ -1231,6 +1236,7 @@ void ManageCat()
     {
     case 1:
         ShowData(1);
+        ManageCat();
         break;
     case 2:
         CreateCat();
@@ -1268,6 +1274,7 @@ void ManageProduct()
     {
     case 1:
         ShowData(2);
+        ManageProduct();
         break;
     case 2:
         CreateProduct();
@@ -1305,6 +1312,7 @@ void ManageEmployees()
     {
     case 1:
         ShowData(3);
+        ManageEmployees();
         break;
     case 2:
         CreateEmployee();
@@ -1583,7 +1591,7 @@ void update(int opt)
                            "rb+");
         FILE *fileTemp = fopen(opt == 1 ? tempCatData : opt == 2 ? tempProductData
                                                                  : tempEmployeeData,
-                               "wb");
+                               "wb+");
         if (opt == 1)
         {
             while (fread(&x, sizeof(x), 1, file) == 1)
