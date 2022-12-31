@@ -99,7 +99,7 @@ void ExitToMenu()
     case 'y':
     case 'Y':
         printf("\nExiting to the main menu...");
-        delay(3);
+        delay(2);
         system("cls");
         UI_Menu();
         break;
@@ -171,7 +171,7 @@ void login()
     log = fopen(fileUserData, "rb");
     if (log == NULL)
     {
-        fputs("Error at opening File!", stderr);
+        fputs("Error opening file!", stderr);
         getch();
         exit(1);
     }
@@ -215,7 +215,7 @@ void registration()
     log = fopen(fileUserData, "w");
     if (log == NULL)
     {
-        fputs("Error at opening File!", stderr);
+        fputs("Error opening file!", stderr);
         exit(1);
     }
 
@@ -252,7 +252,7 @@ void userAuthMenu()
     scanf("%d", &choice);
     while (choice < 1 || choice > 3)
     {
-        printf("Invalid choice, please try again:  ");
+        printf("\tInvalid choice, please try again:  ");
         scanf("%d", &choice);
     }
     system("cls");
@@ -339,7 +339,7 @@ SAVE:
             SubId(2);
             break;
         default:
-            printf("\nInvalid option, re-input your choice: ");
+            printf("\tInvalid option, re-input your choice: ");
             scanf("%c", &check);
             goto SAVE;
             break;
@@ -363,7 +363,7 @@ SAVE:
         case 'N':
             break;
         default:
-            printf("\nInvalid option, re-input your choice: ");
+            printf("\tInvalid option, re-input your choice: ");
             scanf("%c", &reInput);
             break;
         }
@@ -380,7 +380,7 @@ void CreateCat()
     FILE *fptr;
     if ((fptr = fopen(fileCatData, "ab+")) == NULL)
     {
-        printf("Error opening/ creating file!!\n");
+        printf("Error opening/ creating file!\n");
         exit(0);
     }
     puts("------------------------------------------");
@@ -457,7 +457,7 @@ SAVE:
             SubId(1);
             break;
         default:
-            printf("\nInvalid option, re-input your option: ");
+            printf("\tInvalid option, re-input your option: ");
             scanf("%c", &check);
             goto SAVE;
             break;
@@ -482,7 +482,7 @@ REINPUT:
         case 'N':
             break;
         default:
-            printf("\nInvalid option, re-input your choice: ");
+            printf("\tInvalid option, re-input your choice: ");
             scanf("%c", &reInput);
             goto REINPUT;
             break;
@@ -560,7 +560,7 @@ SAVE:
             SubId(3);
             break;
         default:
-            printf("\nInvalid option, re-input your choice: ");
+            printf("\tInvalid option, re-input your choice: ");
             scanf("%c", &check);
             goto SAVE;
             break;
@@ -585,7 +585,7 @@ SAVE:
             ManageEmployees();
             break;
         default:
-            printf("\nInvalid option, re-input your choice: ");
+            printf("\tInvalid option, re-input your choice: ");
             scanf("%c", &reInput);
             break;
         }
@@ -629,7 +629,7 @@ void searchEmployees()
     scanf("%d", &searchID);
     if (checkEmployeeAvailable(employeeId) == 0)
     {
-        printf("\tEmployee ID is invalid! Employee not found!");
+        printf("\nEmployee ID is invalid! Employee not found!");
     }
     while (fread(&z, sizeof(z), 1, fptr) == 1)
     {
@@ -661,7 +661,7 @@ REINPUTEMPLOYEES:
         break;
     case 'n':
     case 'N':
-        delay(3);
+        delay(2);
         system("cls");
         searchFunc();
         break;
@@ -709,7 +709,7 @@ void searchCats()
     scanf("%d", &searchID);
     if (checkCatAvailable(catID) == 0)
     {
-        printf("\tCat ID is invalid! Cat not found!");
+        printf("\nCat ID is invalid! Cat not found!");
     }
     while (fread(&x, sizeof(x), 1, fptr) == 1)
     {
@@ -745,7 +745,7 @@ REINPUTCAT:
         break;
     case 'n':
     case 'N':
-        delay(3);
+        delay(2);
         system("cls");
         searchFunc();
         break;
@@ -793,7 +793,7 @@ void searchProducts()
     scanf("%d", &searchID);
     if (checkProductAvailable(productID) == 0)
     {
-        printf("\tProduct ID is invalid! Product not found!");
+        printf("\nProduct ID is invalid! Product not found!");
     }
     while (fread(&y, sizeof(y), 1, fptr) == 1)
     {
@@ -822,7 +822,7 @@ REINPUTPRODUCT:
         break;
     case 'n':
     case 'N':
-        delay(3);
+        delay(2);
         system("cls");
         searchFunc();
         break;
@@ -861,7 +861,8 @@ void searchFunc()
         UI_Menu();
         break;
     default:
-        printf("\nNo choices were made! Return to the search menu\n");
+        printf("\nNo choices were made! Return to the search menu...\n");
+        delay(2);
         searchFunc();
         break;
     }
@@ -875,8 +876,8 @@ void ShowData(int opt)
                                                         : fileEmployeeData,
                       "rb")) == NULL)
     {
-        printf("\nFile not found!/Not exist Data!!\n");
-        printf("\nExit to menu!!");
+        printf("\nFile not found!/ Data doesn't exist!\n");
+        printf("\nExit to main menu...");
         if (getch())
         {
             UI_Menu();
@@ -930,7 +931,7 @@ void ShowData(int opt)
         }
     }
     printf("\n\n\n*********************************************\n");
-    printf("\nPress any key to continue: ");
+    printf("\nPress any key to continue");
     getch();
     fclose(fptr);
 }
@@ -971,7 +972,7 @@ HEHE:
         UI_Menu();
         break;
     default:
-        printf("\nInvalid option, re-input your choice: ");
+        printf("\tInvalid option, re-input your choice: ");
         goto HEHE;
         break;
     }
@@ -1013,7 +1014,7 @@ HOHO:
         UI_Menu();
         break;
     default:
-        printf("\nInvalid option, re-input your choice: ");
+        printf("\tInvalid option, re-input your choice: ");
         goto HOHO;
         break;
     }
@@ -1055,7 +1056,7 @@ HIHI:
         UI_Menu();
         break;
     default:
-        printf("\nInvalid option, re-input your choice: ");
+        printf("\tInvalid option, re-input your choice: ");
         goto HIHI;
         break;
     }
@@ -1064,7 +1065,7 @@ HIHI:
 void deleteOneEmployee()
 {
     int ID;
-    printf("\nEnter your id :");
+    printf("\n> Enter Employee ID that you want to delete: ");
     scanf("%d", &ID);
     FILE *fptr;
     FILE *fptrTemp;
@@ -1072,7 +1073,7 @@ void deleteOneEmployee()
     fptrTemp = fopen(tempEmployeeData, "wb+");
     if (fptr == NULL)
     {
-        printf("\nError opening/creating file!!");
+        printf("\nError opening/ creating file!");
         fclose(fptr);
         exit(0);
     }
@@ -1088,7 +1089,7 @@ void deleteOneEmployee()
     if (remove(fileEmployeeData) == 0)
     {
         system("cls");
-        printf("\nDeleted successfully!");
+        printf("\n- Deleted successfully!");
         getch();
         fflush(stdin);
         fclose(fptrTemp);
@@ -1096,14 +1097,14 @@ void deleteOneEmployee()
     }
     else
     {
-        printf("\nUnable to delete the file");
+        printf("\n- Unable to delete the file!");
     }
 }
 
 void deleteOneCat()
 {
     int ID;
-    printf("\nEnter your id :");
+    printf("\n> Enter Cat ID that you want to delete: ");
     scanf("%d", &ID);
     FILE *fptr;
     FILE *fptrTemp;
@@ -1111,7 +1112,7 @@ void deleteOneCat()
     fptrTemp = fopen(tempCatData, "wb+");
     if (fptr == NULL)
     {
-        printf("\nError opening/creating file!!");
+        printf("\nError opening/ creating file!");
         fclose(fptr);
         exit(0);
     }
@@ -1127,7 +1128,7 @@ void deleteOneCat()
     if (remove(fileCatData) == 0)
     {
         system("cls");
-        printf("\nDeleted successfully!");
+        printf("\n- Deleted successfully!");
         getch();
         fflush(stdin);
         fclose(fptrTemp);
@@ -1135,14 +1136,14 @@ void deleteOneCat()
     }
     else
     {
-        printf("\nUnable to delete the file");
+        printf("\n- Unable to delete the file!");
     }
 }
 
 void deleteOneProduct()
 {
     int ID;
-    printf("\nEnter your id :");
+    printf("\n> Enter Product ID that you want to delete: ");
     scanf("%d", &ID);
     FILE *fptr;
     FILE *fptrTemp;
@@ -1150,7 +1151,7 @@ void deleteOneProduct()
     fptrTemp = fopen(tempProductData, "wb+");
     if (fptr == NULL)
     {
-        printf("\nError opening/creating file!!");
+        printf("\nError opening/ creating file!");
         fclose(fptr);
         exit(0);
     }
@@ -1166,7 +1167,7 @@ void deleteOneProduct()
     if (remove(fileProductData) == 0)
     {
         system("cls");
-        printf("\nDeleted successfully!");
+        printf("\n- Deleted successfully!");
         getch();
         fflush(stdin);
         fclose(fptrTemp);
@@ -1174,7 +1175,7 @@ void deleteOneProduct()
     }
     else
     {
-        printf("\nUnable to delete the file");
+        printf("\n- Unable to delete the file!");
     }
 }
 
@@ -1186,7 +1187,7 @@ void deleteAllMenu()
     printf("           Wiping out all data\n");
     puts("------------------------------------------");
     puts("\n1. Delete all Cats\n2. Delete all Products\n3. Delete all Employee\n4. Return to the main menu");
-    printf("\n> Select your choice:");
+    printf("\n> Select your choice: ");
     scanf("%d", &u);
     while (u < 1 || u > 4)
     {
@@ -1219,6 +1220,7 @@ void deleteAllMenu()
 
 void ManageCat()
 {
+    system("cls");
     puts("------------------------------------------");
     printf("             Cats Managements\n");
     puts("------------------------------------------");
@@ -1249,7 +1251,7 @@ void ManageCat()
         break;
     case 5:
         printf("\nExiting to the main menu...");
-        delay(3);
+        delay(2);
         UI_Menu();
         break;
     }
@@ -1257,6 +1259,7 @@ void ManageCat()
 
 void ManageProduct()
 {
+    system("cls");
     puts("------------------------------------------");
     printf("          Products Managements\n");
     puts("------------------------------------------");
@@ -1287,7 +1290,7 @@ void ManageProduct()
         break;
     case 5:
         printf("\nExiting to the main menu...");
-        delay(3);
+        delay(2);
         UI_Menu();
         break;
     }
@@ -1295,6 +1298,7 @@ void ManageProduct()
 
 void ManageEmployees()
 {
+    system("cls");
     puts("------------------------------------------");
     printf("          Employees Managements\n");
     puts("------------------------------------------");
@@ -1325,7 +1329,7 @@ void ManageEmployees()
         break;
     case 5:
         printf("\nExiting to the main menu...");
-        delay(3);
+        delay(2);
         UI_Menu();
         break;
     }
@@ -1346,7 +1350,7 @@ void UI_Menu()
         scanf("%d", &u);
         while (u < 1 || u > 6)
         {
-            printf("Invalid choice! Please try again: ");
+            printf("\tInvalid choice! Please try again: ");
             scanf("%d", &u);
         }
         system("cls");
@@ -1380,7 +1384,7 @@ void UI_Menu()
 void CheckShowData(int opt)
 {
     //! 1 - cat, 2 - product, 3 - employees
-    printf("\n> Do you want to show data?:  ");
+    printf("\n> Do you want to show all the existing data? (Y/N):  ");
     fflush(stdin);
     char check;
     scanf("%c", &check);
@@ -1394,7 +1398,7 @@ void CheckShowData(int opt)
     case 'N':
         break;
     default:
-        printf("\tInvalid option!");
+        printf("\nInvalid option!");
         CheckShowData(opt);
         break;
     }
@@ -1408,15 +1412,15 @@ void update(int opt)
     puts("------------------------------------------");
     if (opt == 1)
     {
-        puts("    Update cat's information by ID");
+        puts("      Update cat's information by ID");
     }
     else if (opt == 2)
     {
-        puts("  Update product's information by ID");
+        puts("    Update product's information by ID");
     }
     else if (opt == 3)
     {
-        puts("  Update employee's information by ID");
+        puts("    Update employee's information by ID");
     }
     puts("------------------------------------------");
     // show cat name here
@@ -1428,7 +1432,7 @@ void update(int opt)
     {
         printf("\nError opening file!");
         printf("\nExiting to the main menu...");
-        delay(3);
+        delay(2);
         UI_Menu();
     }
     printf("\n> Enter the valid ID: ");
@@ -1480,7 +1484,7 @@ void update(int opt)
         {
             if (id == z.id)
             {
-                printf("\n\t    Information of %s", z.name);
+                printf("\n         Information of %s", z.name);
                 printf("\n*********************************************");
                 printf("\n- Employee's ID: %d", z.id);
                 printf("\n- Employee's name: %s", z.name);
@@ -1508,7 +1512,7 @@ void update(int opt)
         EPE Data3;
         if (opt == 1)
         {
-            printf("\n       Update your cat's information");
+            printf("\n\n       Update your cat's information");
             printf("\n********************************************");
             fflush(stdin);
             printf("\n> Input cat's name: ");
@@ -1538,7 +1542,7 @@ void update(int opt)
         }
         else if (opt == 2)
         {
-            printf("\n     Update your products's information");
+            printf("\n\n     Update your products's information");
             printf("\n********************************************");
             fflush(stdin);
             printf("\n> Input product's name: ");
@@ -1566,7 +1570,7 @@ void update(int opt)
         }
         else if (opt == 3)
         {
-            printf("\n    Update your employee's information");
+            printf("\n\n    Update your employee's information");
             printf("\n********************************************");
             printf("\n> Input employee's name: ");
             fflush(stdin);
