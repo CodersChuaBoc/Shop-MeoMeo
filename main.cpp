@@ -211,14 +211,11 @@ void login()
 void registration()
 {
     FILE *log;
-
-    log = fopen(fileUserData, "w");
+    log = fopen(fileUserData, "rb");
     if (log == NULL)
     {
-        fputs("Error opening file!", stderr);
-        exit(1);
-    }
-
+    fclose(log);
+    log = fopen(fileUserData,"w");
     struct login l;
     puts("------------------------------------------");
     printf("      Registration for Shop-meomeo\n");
@@ -237,8 +234,16 @@ void registration()
     getch();
     system("CLS");
     login();
+    }
+    else 
+    {
+    printf("Cannot register a new account!\n");
+    printf("Please use an existing account\n");
+    printf("\n");
+    getch();
+    login();
+    }
 }
-
 void userAuthMenu()
 {
     int choice;
@@ -935,6 +940,61 @@ void ShowData(int opt)
     getch();
     fclose(fptr);
 }
+void anotherregister()
+{
+    FILE *log;
+    log = fopen(fileUserData,"w");
+    struct login l;
+    puts("------------------------------------------");
+    printf("      Registration for Shop-meomeo\n");
+    puts("------------------------------------------");
+    printf("\nFill in these information in order to register new account!");
+    printf("\n> Enter your username: ");
+    scanf("%s", l.username);
+    printf("> Enter your password: ");
+    scanf("%s", l.password);
+
+    fwrite(&l, sizeof(l), 1, log);
+    fclose(log);
+
+    printf("\nRegisting new account successfully!\n");
+    printf("Press any key to continue");
+}
+void deleteAllUser()
+{
+    system("cls");
+    char opt2;
+    printf("\n> Are you sure to delete account? (Y/N): ");
+HEHE:
+    scanf("%s", &opt2);
+    switch (opt2)
+    {
+    case 'y':
+    case 'Y':
+        anotherregister();
+        getch();
+        system("cls");
+        printf("Return to the main menu...");
+        printf("\nPress any key to exit");
+        getch();
+        UI_Menu();
+        break;
+    case 'n':
+    case 'N':
+        printf("\nReturn to the main menu...");
+        printf("\nPress any key to exit");
+        printf("\n");
+        getch();
+        system("cls");
+        UI_Menu();
+        break;
+    default:
+        printf("\tInvalid option, re-input your choice: ");
+        goto HEHE;
+        break;
+    }
+}
+
 
 void deleteAllEmployee()
 {
@@ -1186,10 +1246,10 @@ void deleteAllMenu()
     puts("------------------------------------------");
     printf("           Wiping out all data\n");
     puts("------------------------------------------");
-    puts("\n1. Delete all Cats\n2. Delete all Products\n3. Delete all Employee\n4. Return to the main menu");
+    puts("\n1. Delete all Cats\n2. Delete all Products\n3. Delete all Employee\n4. Delete Account\n5. Return to the main menu");
     printf("\n> Select your choice: ");
     scanf("%d", &u);
-    while (u < 1 || u > 4)
+    while (u < 1 || u > 5)
     {
         printf("\tInvalid choice! Please re-enter a valid choice: ");
         scanf("%d", &u);
@@ -1210,6 +1270,11 @@ void deleteAllMenu()
         exit(0);
     }
     else if (u == 4)
+    {
+        deleteAllUser();
+        exit(0);
+    }
+    else if (u == 5)
     {
         system("cls");
         printf("Return to the main menu...");
