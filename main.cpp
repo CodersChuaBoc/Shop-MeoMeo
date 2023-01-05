@@ -86,6 +86,7 @@ void ManageEmployees();
 void ManageCat();
 void ManageProduct();
 void update(int opt);
+void CheckShowData(int opt);
 void searchFunc();
 
 void ExitToMenu()
@@ -366,6 +367,7 @@ SAVE:
             break;
         case 'n':
         case 'N':
+            ManageProduct();
             break;
         default:
             printf("\tInvalid option, re-input your choice: ");
@@ -485,6 +487,7 @@ REINPUT:
             break;
         case 'n':
         case 'N':
+            ManageCat();
             break;
         default:
             printf("\tInvalid option, re-input your choice: ");
@@ -1124,6 +1127,7 @@ HIHI:
 
 void deleteOneEmployee()
 {
+    CheckShowData(3);
     int ID;
     printf("\n> Enter Employee ID that you want to delete: ");
     scanf("%d", &ID);
@@ -1149,11 +1153,11 @@ void deleteOneEmployee()
     if (remove(fileEmployeeData) == 0)
     {
         system("cls");
-        printf("\n- Deleted successfully!");
-        getch();
-        fflush(stdin);
+        printf("\n- Deleted successfully!\n\n");
         fclose(fptrTemp);
+        fflush(stdin);
         rename(tempEmployeeData, fileEmployeeData);
+        ShowData(3);
     }
     else
     {
@@ -1163,6 +1167,7 @@ void deleteOneEmployee()
 
 void deleteOneCat()
 {
+    CheckShowData(1);
     int ID;
     printf("\n> Enter Cat ID that you want to delete: ");
     scanf("%d", &ID);
@@ -1188,11 +1193,11 @@ void deleteOneCat()
     if (remove(fileCatData) == 0)
     {
         system("cls");
-        printf("\n- Deleted successfully!");
-        getch();
+        printf("\n- Deleted successfully!\n\n");
         fflush(stdin);
         fclose(fptrTemp);
         rename(tempCatData, fileCatData);
+        ShowData(1);
     }
     else
     {
@@ -1202,6 +1207,7 @@ void deleteOneCat()
 
 void deleteOneProduct()
 {
+    CheckShowData(2);
     int ID;
     printf("\n> Enter Product ID that you want to delete: ");
     scanf("%d", &ID);
@@ -1227,11 +1233,11 @@ void deleteOneProduct()
     if (remove(fileProductData) == 0)
     {
         system("cls");
-        printf("\n- Deleted successfully!");
-        getch();
+        printf("\n- Deleted successfully!\n\n");
         fflush(stdin);
         fclose(fptrTemp);
         rename(tempProductData, fileProductData);
+        ShowData(2);
     }
     else
     {
@@ -1575,86 +1581,6 @@ void update(int opt)
         CAT Data1;
         PDT Data2;
         EPE Data3;
-        if (opt == 1)
-        {
-            printf("\n\n       Update your cat's information");
-            printf("\n********************************************");
-            fflush(stdin);
-            printf("\n> Input cat's name: ");
-            gets(Data1.name);
-            printf("> Input the weight of your cat: ");
-            fflush(stdin);
-            scanf("%f", &Data1.weight);
-            fflush(stdin);
-            printf("> Input the type of your cat: ");
-            gets(Data1.type);
-            fflush(stdin);
-            printf("> Input the sex of your cat (0 - female/ 1 - male): ");
-            scanf("%d", &Data1.sex);
-            while (Data1.sex != 0 && Data1.sex != 1)
-            {
-                printf("\tInvalid option, re-input the sex of your cat: ");
-                scanf("%d", &Data1.sex);
-            }
-            printf("> Input the vaccination of your kitty (1 - yes/ 0 - not): ");
-            scanf("%d", &Data1.vaccination);
-            while (Data1.vaccination != 0 && Data1.vaccination != 1)
-            {
-                printf("\tInvalid option, re-input the vaccination of your cat: ");
-                scanf("%d", &Data1.vaccination);
-            }
-            Data1.id = id;
-        }
-        else if (opt == 2)
-        {
-            printf("\n\n     Update your products's information");
-            printf("\n********************************************");
-            fflush(stdin);
-            printf("\n> Input product's name: ");
-            gets(Data2.name);
-            printf("> Input the price of your product: ");
-            fflush(stdin);
-            scanf("%u", &Data2.price);
-            while (Data2.price <= 0)
-            {
-                printf("\tInvalid value of price, please re-input it: ");
-                scanf("%u", &Data2.price);
-            }
-            printf("> Input the quantity of your product: ");
-            fflush(stdin);
-            scanf("%d", &Data2.quantity);
-            while (Data2.quantity < 0)
-            {
-                printf("\tInvalid value of quantity, please re-input it: ");
-                scanf("%d", &Data2.quantity);
-            }
-            fflush(stdin);
-            printf("> Input the expire date of your product: ");
-            gets(Data2.expiry);
-            Data2.id = id;
-        }
-        else if (opt == 3)
-        {
-            printf("\n\n    Update your employee's information");
-            printf("\n********************************************");
-            printf("\n> Input employee's name: ");
-            fflush(stdin);
-            gets(Data3.name);
-            fflush(stdin);
-            printf("> Input the gender of your employee (0 - female/ 1 - male): ");
-            scanf("%d", &Data3.gender);
-            while (Data3.gender != 0 && Data3.gender != 1)
-            {
-                printf("\tInvalid option, re-input the gender of your employee: ");
-                scanf("%d", &Data3.gender);
-            }
-            printf("> Input the birthdate of your employee (dd/mm/yy): ");
-            fflush(stdin);
-            gets(Data3.birthdate);
-            printf("> Input the address of your employee: ");
-            gets(Data3.Address);
-            Data3.id = id;
-        }
         FILE *file = fopen(opt == 1 ? fileCatData : opt == 2 ? fileProductData
                                                              : fileEmployeeData,
                            "rb+");
@@ -1671,6 +1597,33 @@ void update(int opt)
                 }
                 else
                 {
+                    printf("\n\n       Update your cat's information");
+                    printf("\n********************************************");
+                    fflush(stdin);
+                    printf("\n> Input cat's name: ");
+                    gets(Data1.name);
+                    printf("> Input the weight of your cat: ");
+                    fflush(stdin);
+                    scanf("%f", &Data1.weight);
+                    fflush(stdin);
+                    printf("> Input the type of your cat: ");
+                    gets(Data1.type);
+                    fflush(stdin);
+                    printf("> Input the sex of your cat (0 - female/ 1 - male): ");
+                    scanf("%d", &Data1.sex);
+                    while (Data1.sex != 0 && Data1.sex != 1)
+                    {
+                        printf("\tInvalid option, re-input the sex of your cat: ");
+                        scanf("%d", &Data1.sex);
+                    }
+                    printf("> Input the vaccination of your kitty (1 - yes/ 0 - not): ");
+                    scanf("%d", &Data1.vaccination);
+                    while (Data1.vaccination != 0 && Data1.vaccination != 1)
+                    {
+                        printf("\tInvalid option, re-input the vaccination of your cat: ");
+                        scanf("%d", &Data1.vaccination);
+                    }
+                    Data1.id = id;
                     fwrite(&Data1, sizeof(Data1), 1, fileTemp);
                 }
             }
@@ -1685,6 +1638,31 @@ void update(int opt)
                 }
                 else
                 {
+                    printf("\n\n     Update your products's information");
+                    printf("\n********************************************");
+                    fflush(stdin);
+                    printf("\n> Input product's name: ");
+                    gets(Data2.name);
+                    printf("> Input the price of your product: ");
+                    fflush(stdin);
+                    scanf("%u", &Data2.price);
+                    while (Data2.price <= 0)
+                    {
+                        printf("\tInvalid value of price, please re-input it: ");
+                        scanf("%u", &Data2.price);
+                    }
+                    printf("> Input the quantity of your product: ");
+                    // fflush(stdin);
+                    scanf("%d", &Data2.quantity);
+                    while (Data2.quantity < 0)
+                    {
+                        printf("\tInvalid value of quantity, please re-input it: ");
+                        scanf("%d", &Data2.quantity);
+                    }
+                    fflush(stdin);
+                    printf("> Input the expire date of your product: ");
+                    gets(Data2.expiry);
+                    Data2.id = id;
                     fwrite(&Data2, sizeof(Data2), 1, fileTemp);
                 }
             }
@@ -1699,6 +1677,25 @@ void update(int opt)
                 }
                 else
                 {
+                    printf("\n\n    Update your employee's information");
+                    printf("\n********************************************");
+                    printf("\n> Input employee's name: ");
+                    fflush(stdin);
+                    gets(Data3.name);
+                    fflush(stdin);
+                    printf("> Input the gender of your employee (0 - female/ 1 - male): ");
+                    scanf("%d", &Data3.gender);
+                    while (Data3.gender != 0 && Data3.gender != 1)
+                    {
+                        printf("\tInvalid option, re-input the gender of your employee: ");
+                        scanf("%d", &Data3.gender);
+                    }
+                    printf("> Input the birthdate of your employee (dd/mm/yy): ");
+                    fflush(stdin);
+                    gets(Data3.birthdate);
+                    printf("> Input the address of your employee: ");
+                    gets(Data3.Address);
+                    Data3.id = id;
                     fwrite(&Data3, sizeof(Data3), 1, fileTemp);
                 }
             }
