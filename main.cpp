@@ -245,6 +245,7 @@ void registration()
     login();
     }
 }
+
 void userAuthMenu()
 {
     int choice;
@@ -943,6 +944,7 @@ void ShowData(int opt)
     getch();
     fclose(fptr);
 }
+
 void anotherregister()
 {
     FILE *log;
@@ -963,6 +965,7 @@ void anotherregister()
     printf("\nRegisting new account successfully!\n");
     printf("Press any key to continue");
 }
+
 void deleteAllUser()
 {
     system("cls");
@@ -997,7 +1000,6 @@ HEHE:
         break;
     }
 }
-
 
 void deleteAllEmployee()
 {
@@ -1252,10 +1254,10 @@ void deleteAllMenu()
     puts("------------------------------------------");
     printf("           Wiping out all data\n");
     puts("------------------------------------------");
-    puts("\n1. Delete all Cats\n2. Delete all Products\n3. Delete all Employee\n4. Delete Account\n5. Return to the main menu");
+    puts("\n1. Delete all Cats\n2. Delete all Products\n3. Delete all Employee\n4. Return to the main menu");
     printf("\n> Select your choice: ");
     scanf("%d", &u);
-    while (u < 1 || u > 5)
+    while (u < 1 || u > 4)
     {
         printf("\tInvalid choice! Please re-enter a valid choice: ");
         scanf("%d", &u);
@@ -1276,11 +1278,6 @@ void deleteAllMenu()
         exit(0);
     }
     else if (u == 4)
-    {
-        deleteAllUser();
-        exit(0);
-    }
-    else if (u == 5)
     {
         system("cls");
         printf("Return to the main menu...");
@@ -1415,11 +1412,11 @@ void UI_Menu()
         puts("------------------------------------------");
         printf("          Welcome to Shop-meomeo\n");
         puts("------------------------------------------");
-        puts("\n1. Manage Cats\n2. Manage Products\n3. Manage Employees\n4. Search\n5. Wipe out all data\n6. Exit");
+        puts("\n1. Manage Cats\n2. Manage Products\n3. Manage Employees\n4. Search\n5. Wipe out all data\n6. Delete existing account\n7. Exit");
         printf("\n> Select your choice: ");
         int u;
         scanf("%d", &u);
-        while (u < 1 || u > 6)
+        while (u < 1 || u > 7)
         {
             printf("\tInvalid choice! Please try again: ");
             scanf("%d", &u);
@@ -1446,6 +1443,10 @@ void UI_Menu()
             deleteAllMenu();
         }
         else if (u == 6)
+        {
+            deleteAllUser();
+        }
+        else if (u == 7)
         {
             exit(0);
         }
