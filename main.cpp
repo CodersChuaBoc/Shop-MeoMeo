@@ -22,6 +22,8 @@
 #define tempProductData "C:/KittyCat/tempProductData"
 #define tempEmployeeData "C:/KittyCat/tempEmployeeData"
 
+#define MAX_LEN_N 20
+#define MAX_LEN_OT 15
 void delay(int number_of_seconds)
 {
     // Converting time into milli_seconds
@@ -44,22 +46,22 @@ void create_folder()
 struct cat
 {
     int id;
-    char name[20];
+    char name[MAX_LEN_N];
     float weight;
-    char type[20];
+    char type[MAX_LEN_OT];
     int sex;         // 0 - female or 1 - male
     int vaccination; // 0 - not or 1 - yes
 };
 typedef struct cat CAT;
-CAT x; //
+CAT x;
 
 struct product
 {
     int id;
-    char name[20];
+    char name[MAX_LEN_N];
+    int price;
     int quantity;
-    char expiry[20];
-    unsigned int price;
+    char expiry[MAX_LEN_OT];
 };
 typedef struct product PDT;
 PDT y;
@@ -67,10 +69,10 @@ PDT y;
 struct employee
 {
     int id;
-    char name[20];
+    char name[MAX_LEN_N];
     int gender;
-    char birthdate[20];
-    char Address[100];
+    char birthdate[MAX_LEN_OT];
+    char address[MAX_LEN_N];
 };
 typedef struct employee EPE;
 EPE z;
@@ -88,6 +90,7 @@ void ManageProduct();
 void update(int opt);
 void CheckShowData(int opt);
 void searchFunc();
+void registration();
 
 void ExitToMenu()
 {
@@ -173,8 +176,11 @@ void login()
     if (log == NULL)
     {
         fputs("Error opening file!", stderr);
+        printf("Account not found!\n");
+        printf("Switch to registratrion\n");
         getch();
-        exit(1);
+        system("cls");
+        registration();
     }
     struct login l;
     puts("------------------------------------------");
@@ -215,34 +221,35 @@ void registration()
     log = fopen(fileUserData, "rb");
     if (log == NULL)
     {
-    fclose(log);
-    log = fopen(fileUserData,"w");
-    struct login l;
-    puts("------------------------------------------");
-    printf("      Registration for Shop-meomeo\n");
-    puts("------------------------------------------");
-    printf("\nFill in these information in order to register new account!");
-    printf("\n> Enter your username: ");
-    scanf("%s", l.username);
-    printf("> Enter your password: ");
-    scanf("%s", l.password);
+        fclose(log);
+        log = fopen(fileUserData, "w");
+        struct login l;
+        puts("------------------------------------------");
+        printf("      Registration for Shop-meomeo\n");
+        puts("------------------------------------------");
+        printf("\nFill in these information in order to register new account!");
+        printf("\n> Enter your username: ");
+        scanf("%s", l.username);
+        printf("> Enter your password: ");
+        scanf("%s", l.password);
 
-    fwrite(&l, sizeof(l), 1, log);
-    fclose(log);
+        fwrite(&l, sizeof(l), 1, log);
+        fclose(log);
 
-    printf("\nRegisting new account successfully!\n");
-    printf("Press any key to continue to the login menu!");
-    getch();
-    system("CLS");
-    login();
+        printf("\nRegisting new account successfully!\n");
+        printf("Press any key to continue to the login menu!");
+        getch();
+        system("cls");
+        login();
     }
-    else 
+    else
     {
-    printf("Cannot register a new account!\n");
-    printf("Please use an existing account\n");
-    printf("\n");
-    getch();
-    login();
+        printf("Cannot register a new account!\n");
+        printf("Please use an existing account\n");
+        printf("Exit to Login screen\n");
+        getch();
+        system("cls");
+        login();
     }
 }
 
@@ -277,12 +284,26 @@ void userAuthMenu()
     }
 }
 
+void formatStr(char *str, int len)
+{
+
+    char *newline_ptr = strchr(str, '\n');
+
+    // nếu tìm thấy kí tự kết thúc dòng
+    if (newline_ptr != NULL)
+    {
+        // gán kí tự null vào vị trí đó để loại bỏ nó
+        *newline_ptr = '\0';
+    }
+    // fill space to str
+    memset(str + strlen(str), ' ', len - strlen(str) - 1);
+}
+
 void CreateProduct()
 {
     system("cls");
     char check;
     int productId = GenerateId(2);
-    // char dir[30] = fileProductData;
     FILE *fptr;
     if ((fptr = fopen(fileProductData, "ab+")) == NULL)
     {
@@ -292,20 +313,20 @@ void CreateProduct()
     puts("------------------------------------------");
     printf("            Add a new product\n");
     puts("------------------------------------------");
-    // input data of cat
-    printf("\n> Input product's name: ");
+    // input data of product
     fflush(stdin);
-    gets(y.name);
+    printf("\n> Input product's name: ");
+    fgets(y.name, MAX_LEN_N, stdin);
+    formatStr(y.name, MAX_LEN_N);
     printf("> Input the price of your product: ");
     fflush(stdin);
-    scanf("%u", &y.price);
+    scanf("%d", &y.price);
     while (y.price <= 0)
     {
         printf("\tInvalid value of price, please re-input it: ");
-        scanf("%u", &y.price);
+        scanf("%d", &y.price);
     }
     printf("> Input the quantity of your product: ");
-    fflush(stdin);
     scanf("%d", &y.quantity);
     while (y.quantity < 0)
     {
@@ -313,14 +334,15 @@ void CreateProduct()
         scanf("%d", &y.quantity);
     }
     fflush(stdin);
-    printf("> Input the expire date of your product: ");
-    gets(y.expiry);
+    printf("> Input the expire date of your product(DD/MM/YY): ");
+    fgets(y.expiry, MAX_LEN_OT, stdin);
+    formatStr(y.expiry, MAX_LEN_OT);
     y.id = productId;
     fflush(stdin);
     // output data of product you entered
     system("cls");
     printf("\nYour information of the product that you have entered");
-    printf("\n*****************************************************");
+    printf("\n*****************************************************\n");
     printf("\n- Product's ID: %d", y.id);
     printf("\n- Product's name: %s", y.name);
     printf("\n- Product's price: %d VND", y.price);
@@ -328,22 +350,23 @@ void CreateProduct()
     printf("\n- Product's expire date: %s", y.expiry);
     printf("\n*****************************************************");
     printf("\n\n> Do you want to save this product information? (Y/N): ");
+    scanf("%c", &check);
 SAVE:
     while (1)
     {
-        scanf("%c", &check);
         switch (check)
         {
         case 'y':
         case 'Y':
             fwrite(&y, sizeof(y), 1, fptr);
-            printf("\n- Product's information is saved!");
             fclose(fptr);
+            printf("\n- Product's information is saved!");
             break;
         case 'n':
         case 'N':
             printf("\n- Product's information isn't being saved!");
             SubId(2);
+            fclose(fptr);
             break;
         default:
             printf("\tInvalid option, re-input your choice: ");
@@ -356,9 +379,9 @@ SAVE:
     fflush(stdin);
     printf("\n> Do you want to re-input a new product? (Y/N): ");
     char reInput;
+    scanf("%c", &reInput);
     while (1)
     {
-        scanf("%c", &reInput);
         switch (reInput)
         {
         case 'y':
@@ -375,7 +398,6 @@ SAVE:
             scanf("%c", &reInput);
             break;
         }
-        break;
     }
 }
 
@@ -395,15 +417,22 @@ void CreateCat()
     printf("          Add a new cat\n");
     puts("------------------------------------------");
     // input data of cat
-    printf("\n> Input cat's name: ");
     fflush(stdin);
-    gets(x.name);
+    printf("\n> Input cat's name: ");
+    fgets(x.name, MAX_LEN_N, stdin);
+    formatStr(x.name, MAX_LEN_N);
     printf("> Input the weight of your cat: ");
     fflush(stdin);
     scanf("%f", &x.weight);
+    while (x.weight <= 0.0)
+    {
+        printf("\tInvalid option, re-input the weight of your cat: ");
+        scanf("%f", &x.weight);
+    }
     fflush(stdin);
     printf("> Input the type of your cat: ");
-    gets(x.type);
+    fgets(x.type, MAX_LEN_OT, stdin);
+    formatStr(x.type, MAX_LEN_OT);
     fflush(stdin);
     printf("> Input the sex of your cat (0 - female/ 1 - male): ");
     scanf("%d", &x.sex);
@@ -423,27 +452,14 @@ void CreateCat()
     // output data of cat you entered
     system("cls");
     printf("\nThe information of the cat that you have entered");
-    printf("\n************************************************");
+    printf("\n************************************************\n");
     printf("\n- Cat ID %d", x.id);
     printf("\n- Cat's name: %s", x.name);
     printf("\n- Cat's weight: %.1f", x.weight);
     printf("\n- Cat's type: %s", x.type);
-    if (x.sex)
-    {
-        printf("\n- The sex of your cat: Male");
-    }
-    else
-    {
-        printf("\n- The sex of your cat: Female");
-    }
-    if (x.vaccination)
-    {
-        printf("\n- Your cat is vaccinated");
-    }
-    else
-    {
-        printf("\n- Your cat isn't vaccinated");
-    }
+    x.sex ? printf("\n- The sex of your cat: Male") : printf("\n- The sex of your cat: Female");
+    x.vaccination ? printf("\n- Your cat is vaccinated")
+                  : printf("\n- Your cat isn't vaccinated");
     fflush(stdin);
     printf("\n************************************************");
     printf("\n\n> Do you want to save this cat information? (Y/N): ");
@@ -463,6 +479,7 @@ SAVE:
         case 'N':
             printf("\n- Cat's information isn't being saved!");
             SubId(1);
+            fclose(fptr);
             break;
         default:
             printf("\tInvalid option, re-input your option: ");
@@ -475,10 +492,10 @@ SAVE:
     fflush(stdin);
     printf("\n> Do you want to re-input a new cat? (Y/N): ");
     char reInput;
-REINPUT:
+    scanf("%c", &reInput);
     while (1)
     {
-        scanf("%c", &reInput);
+        fflush(stdin);
         switch (reInput)
         {
         case 'y':
@@ -493,10 +510,8 @@ REINPUT:
         default:
             printf("\tInvalid option, re-input your choice: ");
             scanf("%c", &reInput);
-            goto REINPUT;
             break;
         }
-        break;
     }
 }
 
@@ -515,9 +530,10 @@ void CreateEmployee()
     printf("           Add a new employee\n");
     puts("------------------------------------------");
     // input data of employee
-    printf("\n> Input employee's name: ");
+    printf("\n> Input employee's name(last name + first name): ");
     fflush(stdin);
-    gets(z.name);
+    fgets(z.name, MAX_LEN_N, stdin);
+    formatStr(z.name, MAX_LEN_N);
     fflush(stdin);
     printf("> Input the gender of your employee (0 - female/ 1 - male): ");
     scanf("%d", &z.gender);
@@ -528,26 +544,24 @@ void CreateEmployee()
     }
     printf("> Input the birthdate of your employee (dd/mm/yy): ");
     fflush(stdin);
-    gets(z.birthdate);
-    printf("> Input the address of your employee: ");
-    gets(z.Address);
+    fgets(z.birthdate, MAX_LEN_OT, stdin);
+    formatStr(z.birthdate, MAX_LEN_OT);
+    fflush(stdin);
+    printf("> Input the address of your employee(Province): ");
+    fgets(z.address, MAX_LEN_OT, stdin);
+    formatStr(z.address, MAX_LEN_OT);
     z.id = employeeId;
+    fflush(stdin);
     // output data of employee you entered
     system("cls");
     printf("\nYour information of the employee that you have entered");
-    printf("\n******************************************************");
+    printf("\n******************************************************\n");
     printf("\n- Employee's ID %d", z.id);
     printf("\n- Employee's name: %s", z.name);
-    if (z.gender)
-    {
-        printf("\n- The gender of your employee: Male");
-    }
-    else
-    {
-        printf("\n- The gender of your employee: Female");
-    }
+    z.gender ? printf("\n- The gender of your employee: Male")
+             : printf("\n- The gender of your employee: Female");
     printf("\n- Employee's birthdate: %s", z.birthdate);
-    printf("\n- Employee's address: %s", z.Address);
+    printf("\n- Employee's address: %s", z.address);
     printf("\n******************************************************");
     printf("\n\n> Do you want to save this employee information? (Y/N): ");
 SAVE:
@@ -567,6 +581,7 @@ SAVE:
         case 'N':
             printf("\n- Employee's information isn't being saved!");
             SubId(3);
+            fclose(fptr);
             break;
         default:
             printf("\tInvalid option, re-input your choice: ");
@@ -579,9 +594,9 @@ SAVE:
     fflush(stdin);
     printf("\n> Do you want to re-input a new employee? (Y/N): ");
     char reInput;
+    scanf("%s", &reInput);
     while (1)
     {
-        scanf("%c", &reInput);
         switch (reInput)
         {
         case 'y':
@@ -595,10 +610,9 @@ SAVE:
             break;
         default:
             printf("\tInvalid option, re-input your choice: ");
-            scanf("%c", &reInput);
+            scanf("%s", &reInput);
             break;
         }
-        break;
     }
 }
 
@@ -654,7 +668,7 @@ void searchEmployees()
             else
                 printf("\n- Gender: Female");
             printf("\n- Employee's birthdate: %s", z.birthdate);
-            printf("\n- Employee's address: %s", z.Address);
+            printf("\n- Employee's address: %s", z.address);
         }
     }
     char reSearch;
@@ -896,14 +910,15 @@ void ShowData(int opt)
     {
         printf("\n       Information of every products");
         printf("\n*********************************************\n");
-        puts("ID \tName\t\t\tPrice\t\tQuantity\tExpire date");
+        puts("ID \tName\t\t\t\tPrice\t\t\tQuantity\tExpire date\n");
         while (fread(&y, sizeof(y), 1, fptr) == 1)
         {
-            printf("%d\t", y.id);
-            printf("%s\t\t\t", y.name);
-            printf("%dVND\t\t", y.price);
+            fflush(stdout);
+            printf("%d \t", y.id);
+            printf("%s\t\t", y.name);
+            printf("%d\t\t\t", y.price);
             printf("%d\t\t", y.quantity);
-            printf("%s\t", y.expiry);
+            printf("%s", y.expiry);
             printf("\n");
         }
     }
@@ -911,9 +926,10 @@ void ShowData(int opt)
     {
         printf("\n         Information of every cats");
         printf("\n*********************************************\n");
-        puts("ID \tName\t\t\tWeight\t\tType\t\tSex\t\tVaccination");
+        puts("ID \tName\t\t\t\t\tWeight\t\tType\t\t\tSex\t\tVaccination");
         while (fread(&x, sizeof(x), 1, fptr) == 1)
         {
+            fflush(stdout);
             printf("%d\t", x.id);
             printf("%s\t\t\t", x.name);
             printf("%.1f\t\t", x.weight);
@@ -928,14 +944,13 @@ void ShowData(int opt)
     {
         printf("\n       Information of every employees");
         printf("\n*********************************************\n");
-        puts("ID \tName\t\t\tGender\t\tBirthdate\t\tAddress\t\t");
+        puts("ID \tName\t\t\t\t\tGender\t\tBirthdate\t\tAddress\t\t");
         while (fread(&z, sizeof(z), 1, fptr) == 1)
         {
-            printf("%d\t", z.id);
-            printf("%s\t\t\t", z.name);
-            z.gender ? printf("Male\t\t") : printf("Female\t\t");
-            printf("%s\t\t", z.birthdate);
-            printf("%s\t\t", z.Address);
+            fflush(stdout);
+            printf("%d \t%s\t\t\t", z.id, z.name);
+            z.gender ? printf("Male") : printf("Female");
+            printf("\t\t%s\t\t%s", z.birthdate, z.address);
             printf("\n");
         }
     }
@@ -948,7 +963,7 @@ void ShowData(int opt)
 void anotherregister()
 {
     FILE *log;
-    log = fopen(fileUserData,"w");
+    log = fopen(fileUserData, "w");
     struct login l;
     puts("------------------------------------------");
     printf("      Registration for Shop-meomeo\n");
@@ -1565,7 +1580,7 @@ void update(int opt)
                 else
                     printf("\n- Gender: Female");
                 printf("\n- Employee's birthdate: %s", z.birthdate);
-                printf("\n- Employee's address: %s", z.Address);
+                printf("\n- Employee's address: %s", z.address);
                 isHave++;
             }
         }
@@ -1602,13 +1617,20 @@ void update(int opt)
                     printf("\n********************************************");
                     fflush(stdin);
                     printf("\n> Input cat's name: ");
-                    gets(Data1.name);
+                    fgets(Data1.name, MAX_LEN_N, stdin);
+                    formatStr(Data1.name, MAX_LEN_N);
                     printf("> Input the weight of your cat: ");
                     fflush(stdin);
                     scanf("%f", &Data1.weight);
+                    while (x.weight <= 0.0)
+                    {
+                        printf("\tInvalid option, re-input the weight of your cat: ");
+                        scanf("%f", &x.weight);
+                    }
                     fflush(stdin);
                     printf("> Input the type of your cat: ");
-                    gets(Data1.type);
+                    fgets(Data1.type, MAX_LEN_OT, stdin);
+                    formatStr(Data1.type, MAX_LEN_OT);
                     fflush(stdin);
                     printf("> Input the sex of your cat (0 - female/ 1 - male): ");
                     scanf("%d", &Data1.sex);
@@ -1643,7 +1665,8 @@ void update(int opt)
                     printf("\n********************************************");
                     fflush(stdin);
                     printf("\n> Input product's name: ");
-                    gets(Data2.name);
+                    fgets(Data2.name, MAX_LEN_N, stdin);
+                    formatStr(Data2.name, MAX_LEN_N);
                     printf("> Input the price of your product: ");
                     fflush(stdin);
                     scanf("%u", &Data2.price);
@@ -1662,7 +1685,8 @@ void update(int opt)
                     }
                     fflush(stdin);
                     printf("> Input the expire date of your product: ");
-                    gets(Data2.expiry);
+                    fgets(Data2.expiry, MAX_LEN_OT, stdin);
+                    formatStr(Data2.expiry, MAX_LEN_OT);
                     Data2.id = id;
                     fwrite(&Data2, sizeof(Data2), 1, fileTemp);
                 }
@@ -1682,7 +1706,8 @@ void update(int opt)
                     printf("\n********************************************");
                     printf("\n> Input employee's name: ");
                     fflush(stdin);
-                    gets(Data3.name);
+                    fgets(Data3.name, MAX_LEN_N, stdin);
+                    formatStr(Data3.name, MAX_LEN_N);
                     fflush(stdin);
                     printf("> Input the gender of your employee (0 - female/ 1 - male): ");
                     scanf("%d", &Data3.gender);
@@ -1693,9 +1718,11 @@ void update(int opt)
                     }
                     printf("> Input the birthdate of your employee (dd/mm/yy): ");
                     fflush(stdin);
-                    gets(Data3.birthdate);
-                    printf("> Input the address of your employee: ");
-                    gets(Data3.Address);
+                    fgets(Data3.birthdate, MAX_LEN_OT, stdin);
+                    formatStr(Data3.birthdate, MAX_LEN_OT);
+                    printf("> Input the address of your employee(Province): ");
+                    fgets(Data3.address, MAX_LEN_OT, stdin);
+                    formatStr(Data3.address, MAX_LEN_OT);
                     Data3.id = id;
                     fwrite(&Data3, sizeof(Data3), 1, fileTemp);
                 }
