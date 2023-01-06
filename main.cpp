@@ -328,7 +328,7 @@ void CreateProduct()
     }
     printf("> Input the quantity of your product: ");
     scanf("%d", &y.quantity);
-    while (y.quantity < 0)
+    while (y.quantity < 0 && y.quantity > 9999999)
     {
         printf("\tInvalid value of quantity, please re-input it: ");
         scanf("%d", &y.quantity);
@@ -910,7 +910,7 @@ void ShowData(int opt)
     {
         printf("\n       Information of every products");
         printf("\n*********************************************\n");
-        puts("ID \tName\t\t\t\tPrice\t\t\tQuantity\tExpire date\n");
+        puts("ID \tName\t\t\t\tPrice(VND)\t\t\tQuantity\tExpire date\n");
         while (fread(&y, sizeof(y), 1, fptr) == 1)
         {
             fflush(stdout);
